@@ -1,0 +1,653 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>e-Learning English by Mam Yanti</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* (CSS LENGKAP - SAMA SEPERTI SEBELUMNYA, TIDAK ADA PERUBAHAN) */
+        :root {
+            --primary-color: #4A90E2; --secondary-color: #50E3C2; --text-color: #4A4A4A;
+            --danger-color: #E24A4A; --bg-color: #F7F9FC; --card-bg: #FFFFFF; --border-color: #EAEAEA;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-color);
+            display: flex; justify-content: center; align-items: center; min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #app-container {
+            width: 100%; max-width: 480px; height: 100vh; background-color: var(--card-bg);
+            display: flex; flex-direction: column; overflow: hidden;
+            @media (min-width: 481px) {
+                max-height: 90vh; min-height: 600px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            }
+        }
+        .page { flex-grow: 1; overflow-y: auto; padding: 25px; display: none; }
+        .page.active { display: block; }
+        #login-page {
+            display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        }
+        #login-page.active { display: flex; }
+        .login-card { background: var(--card-bg); padding: 40px 30px; border-radius: 20px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .login-card h1 { color: var(--primary-color); font-weight: 700; font-size: 1.8em; }
+        .login-card h2 { font-weight: 400; font-size: 1.2em; margin-bottom: 25px; }
+        .login-card p { font-size: 0.9em; margin-bottom: 25px; }
+        button {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+            padding: 12px 20px; border-radius: 12px; font-size: 1em; font-family: 'Poppins', sans-serif;
+            cursor: pointer; transition: all 0.2s ease; border: none; font-weight: 500;
+        }
+        button.primary { background-color: var(--primary-color); color: white; }
+        button.primary:hover { background-color: #3a7bc8; }
+        button.primary:disabled { background-color: #aaa; }
+        button#login-btn { background-color: #fff; color: var(--text-color); border: 1px solid var(--border-color); }
+        button#login-btn:hover { background-color: #f5f5f5; }
+        button img { width: 22px; }
+        input, textarea, select {
+            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);
+            margin-bottom: 15px; font-family: 'Poppins', sans-serif; font-size: 1em; background-color: #fdfdfd;
+        }
+        textarea { resize: vertical; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .header h1 { font-size: 1.5em; font-weight: 600; }
+        .logout-btn { background: none; border: none; color: var(--primary-color); font-size: 1.5em; cursor: pointer; width: auto; padding: 5px; }
+        .feature-card {
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 15px;
+            padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .feature-card h3 {
+            margin-bottom: 15px; font-size: 1.1em; font-weight: 600; border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px; display: flex; align-items: center; gap: 10px;
+        }
+        .content-list { max-height: 250px; overflow-y: auto; }
+        .content-item { padding: 15px 5px; border-bottom: 1px solid var(--border-color); }
+        .content-item:last-child { border-bottom: none; }
+        .content-item strong { display: block; margin-bottom: 5px; color: var(--primary-color); }
+        .content-item p { font-size: 0.95em; line-height: 1.5; white-space: pre-wrap; }
+        .content-item small { font-size: 0.8em; color: #9B9B9B; }
+        .list-item-teacher { display: flex; justify-content: space-between; align-items: center; padding: 12px 5px; border-bottom: 1px solid var(--border-color); }
+        .list-item-teacher:last-child { border-bottom: none; }
+        .list-item-teacher span { flex-grow: 1; font-size: 0.9em; word-break: break-all; }
+        .delete-btn { background: var(--danger-color); color: white; border: none; border-radius: 8px; padding: 5px 10px; font-size: 0.8em; width: auto; cursor: pointer; }
+        .spinner-container { display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%;
+            border-left-color: var(--primary-color); animation: spin 1s ease infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+
+        <div id="login-page" class="page active">
+            <div class="login-card">
+                <h1>e-Learning English</h1>
+                <h2>by Mam Yanti</h2>
+                <p>Silakan masuk dengan Akun Google Anda untuk memulai pembelajaran.</p>
+                <button id="login-btn">
+                    <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo">
+                    <span>Masuk dengan Google</span>
+                </button>
+                <div class="spinner-container" style="display: none;" id="login-spinner">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="teacher-dashboard-page" class="page">
+            <div class="header">
+                <h1 id="teacher-welcome">Hai, Mam Yanti!</h1>
+                <button class="logout-btn" id="teacher-logout-btn" title="Keluar"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+            
+            <div class="feature-card">
+                <h3><i class="fa-solid fa-bullhorn"></i> Buat Pengumuman</h3>
+                <input type="text" id="announcement-title" placeholder="Judul Pengumuman">
+                <textarea id="announcement-content" rows="3" placeholder="Isi pengumuman..."></textarea>
+                <select id="announcement-class">
+                    <option value="">-- Pilih Kelas --</option>
+                    <optgroup label="Kelas XII"> <option value="XII-1">XII-1</option> <option value="XII-2">XII-2</option> <option value="XII-3">XII-3</option> <option value="XII-4">XII-4</option> <option value="XII-5">XII-5</option> <option value="XII-6">XII-6</option> <option value="XII-7">XII-7</option> <option value="XII-8">XII-8</option> </optgroup>
+                    <optgroup label="Kelas XI"> <option value="XI-5">XI-5</option> <option value="XI-6">XI-6</option> <option value="XI-7">XI-7</option> <option value="XI-8">XI-8</option> <option value="XI-9">XI-9</option> <option value="XI-10">XI-10</option> </optgroup>
+                    <option value="SEMUA KELAS">SEMUA KELAS</option>
+                </select>
+                <button class="primary" id="publish-announcement-btn">Publikasikan</button>
+                
+                <h3 style="margin-top: 20px;"><i class="fa-solid fa-list-ul"></i> Riwayat Pengumuman</h3>
+                <div id="teacher-announcement-list" class="content-list">
+                    <div class="spinner-container"><div class="spinner"></div></div>
+                </div>
+            </div>
+
+            <div class="feature-card">
+                <h3><i class="fa-solid fa-cloud-arrow-up"></i> Upload Materi (dari Google Drive)</h3>
+                 <select id="material-class-target">
+                    <option value="">-- Pilih Kelas untuk Materi --</option>
+                    <optgroup label="Kelas XII"> <option value="XII-1">XII-1</option> <option value="XII-2">XII-2</option> <option value="XII-3">XII-3</option> <option value="XII-4">XII-4</option> <option value="XII-5">XII-5</option> <option value="XII-6">XII-6</option> <option value="XII-7">XII-7</option> <option value="XII-8">XII-8</option> </optgroup>
+                    <optgroup label="Kelas XI"> <option value="XI-5">XI-5</option> <option value="XI-6">XI-6</option> <option value="XI-7">XI-7</option> <option value="XI-8">XI-8</option> <option value="XI-9">XI-9</option> <option value="XI-10">XI-10</option> </optgroup>
+                    <option value="SEMUA KELAS">SEMUA KELAS</option>
+                </select>
+                <button id="upload-material-btn"><i class="fa-brands fa-google-drive"></i> Pilih File dari Google Drive</button>
+                <p id="upload-status" style="text-align: center; margin-top: 10px; font-size: 0.9em;"></p>
+                
+                <h3 style="margin-top: 20px;"><i class="fa-solid fa-book"></i> Daftar Materi Terupload</h3>
+                <div id="teacher-material-list" class="content-list">
+                    <div class="spinner-container"><div class="spinner"></div></div>
+                </div>
+            </div>
+            
+            <div class="feature-card">
+                <h3><i class="fa-solid fa-clipboard-user"></i> Rekap Absensi Siswa</h3>
+                <p style="font-size: 0.9em; margin-bottom: 15px;">Lihat rekap absensi harian siswa per kelas.</p>
+                <input type="date" id="attendance-recap-date">
+                <select id="attendance-recap-class">
+                    <option value="">-- Pilih Kelas --</option>
+                    <optgroup label="Kelas XII"> <option value="XII-1">XII-1</option> <option value="XII-2">XII-2</option> <option value="XII-3">XII-3</option> <option value="XII-4">XII-4</option> <option value="XII-5">XII-5</option> <option value="XII-6">XII-6</option> <option value="XII-7">XII-7</option> <option value="XII-8">XII-8</option> </optgroup>
+                    <optgroup label="Kelas XI"> <option value="XI-5">XI-5</option> <option value="XI-6">XI-6</option> <option value="XI-7">XI-7</option> <option value="XI-8">XI-8</option> <option value="XI-9">XI-9</option> <option value="XI-10">XI-10</option> </optgroup>
+                </select>
+                <button class="primary" id="view-attendance-btn">Tampilkan Rekap</button>
+                <div id="attendance-recap-list" class="content-list" style="margin-top: 15px;"></div>
+            </div>
+
+            </div>
+
+        <div id="student-dashboard-page" class="page">
+            <div class="header">
+                 <h1 id="student-welcome">Selamat Datang!</h1>
+                 <button class="logout-btn" id="student-logout-btn" title="Keluar"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+            
+            <div id="student-class-selector" style="display:none;" class="feature-card">
+                <h3>Pilih Kelas Anda</h3>
+                <p>Silakan pilih kelas Anda terlebih dahulu.</p>
+                <select id="student-class-options">
+                    <option value="">-- Pilih Kelas --</option>
+                    <optgroup label="Kelas XII"> <option value="XII-1">XII-1</option> <option value="XII-2">XII-2</option> <option value="XII-3">XII-3</option> <option value="XII-4">XII-4</option> <option value="XII-5">XII-5</option> <option value="XII-6">XII-6</option> <option value="XII-7">XII-7</option> <option value="XII-8">XII-8</option> </optgroup>
+                    <optgroup label="Kelas XI"> <option value="XI-5">XI-5</option> <option value="XI-6">XI-6</option> <option value="XI-7">XI-7</option> <option value="XI-8">XI-8</option> <option value="XI-9">XI-9</option> <option value="XI-10">XI-10</option> </optgroup>
+                </select>
+                <button class="primary" id="save-class-btn">Simpan Kelas</button>
+            </div>
+
+            <div id="student-main-content" style="display:none;">
+            
+                 <div class="feature-card">
+                    <h3><i class="fa-solid fa-user-check"></i> Absensi Hari Ini</h3>
+                    <p id="attendance-status" style="font-size: 0.9em; text-align: center; margin-bottom: 15px;">Memeriksa status...</p>
+                    <input type="number" id="attendance-input" placeholder="Masukkan Nomor Absen Anda" style="margin-bottom: 10px;">
+                    <button class="primary" id="submit-attendance-btn" disabled>Kirim Absensi</button>
+                </div>
+            
+                 <div class="feature-card">
+                    <h3><i class="fa-solid fa-bullhorn"></i> Pengumuman</h3>
+                    <div id="announcement-list" class="content-list">
+                        <div class="spinner-container"><div class="spinner"></div></div>
+                    </div>
+                </div>
+                
+                 <div class="feature-card">
+                    <h3><i class="fa-solid fa-book-open"></i> Materi Belajar</h3>
+                    <div id="material-list" class="content-list">
+                         <div class="spinner-container"><div class="spinner"></div></div>
+                    </div>
+                </div>
+                
+                </div>
+        </div>
+
+    </div> <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
+
+    <script type="module">
+        // =================================================================
+        // == KONFIGURASI KUNCI API ==
+        // =================================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDpYabA0lb-0uh3Pe-URmeY7WxpIHj7c5Q",
+            authDomain: "e-learning-mamyanti.firebaseapp.com",
+            projectId: "e-learning-mamyanti",
+            storageBucket: "e-learning-mamyanti.appspot.com", // Biarkan saja, tidak apa-apa
+            messagingSenderId: "198925356373",
+            appId: "1:198925356373:web:754ae2355b925aa50333dc"
+        };
+        
+        // KUNCI GOOGLE API KEMBALI LAGI
+        const GOOGLE_API_KEY = "AIzaSyBJ9yRe5AYOJGiYwAqlm5wK1La3LhhuS5A";
+        const GOOGLE_CLIENT_ID = "198925356373-mb0ame0q1sh3elqlq4mofgdakn8df9jh.apps.googleusercontent.com";
+        const APP_ID = "198925356373"; 
+        
+        const TEACHER_EMAIL = "elearningmamyanti@gmail.com";
+        // =================================================================
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        // const storage = firebase.storage(); // Hapus, tidak dipakai
+
+        // DOM Elements
+        const pages = document.querySelectorAll('.page');
+        const loginBtn = document.getElementById('login-btn');
+        const loginSpinner = document.getElementById('login-spinner');
+        
+        // ... (Fungsi Page Navigation, Auth, Login, HandleUserLogin, Logout - SAMA) ...
+        function showPage(pageId) {
+            pages.forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                loginBtn.style.display = 'none';
+                loginSpinner.style.display = 'flex';
+                await handleUserLogin(user);
+            } else {
+                 showPage('login-page');
+                 loginBtn.style.display = 'inline-flex';
+                 loginSpinner.style.display = 'none';
+            }
+        });
+        loginBtn.addEventListener('click', () => {
+            loginBtn.style.display = 'none';
+            loginSpinner.style.display = 'flex';
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).catch(error => {
+                console.error("Login error:", error);
+                alert("Gagal masuk. Silakan coba lagi.");
+                showPage('login-page');
+                loginBtn.style.display = 'inline-flex';
+                loginSpinner.style.display = 'none';
+            });
+        });
+        async function handleUserLogin(user) {
+            const userRef = db.collection('users').doc(user.uid);
+            const userDoc = await userRef.get();
+            if (user.email.toLowerCase() === TEACHER_EMAIL.toLowerCase()) {
+                if (!userDoc.exists) {
+                    await userRef.set({ name: user.displayName, email: user.email, role: 'teacher' }, { merge: true });
+                }
+                initializeTeacherDashboard(user);
+            } else {
+                 if (!userDoc.exists) {
+                    await userRef.set({ name: user.displayName, email: user.email, role: 'student', class: null }, { merge: true });
+                }
+                const userData = (await userRef.get()).data();
+                initializeStudentDashboard(user, userData);
+            }
+        }
+        function setupLogout(buttonId) {
+             document.getElementById(buttonId).addEventListener('click', () => {
+                if (confirm('Apakah Anda yakin ingin keluar?')) { auth.signOut(); }
+             });
+        }
+        
+        // =================================================================
+        // == TEACHER DASHBOARD LOGIC (KEMBALI KE GOOGLE DRIVE PICKER)
+        // =================================================================
+        
+        let teacherAnnouncementsListener = null;
+        let teacherMaterialsListener = null;
+
+        function initializeTeacherDashboard(user) {
+            setupLogout('teacher-logout-btn');
+            
+            document.getElementById('publish-announcement-btn').onclick = publishAnnouncement;
+            document.getElementById('upload-material-btn').onclick = initPicker; // DIUBAH KEMBALI
+            document.getElementById('view-attendance-btn').onclick = viewAttendance;
+
+            loadTeacherAnnouncements();
+            loadTeacherMaterials();
+            setupDeleteListeners(); 
+
+            showPage('teacher-dashboard-page');
+            document.getElementById('attendance-recap-date').valueAsDate = new Date();
+        }
+
+        async function publishAnnouncement() {
+            // ... (SAMA SEPERTI v3.0) ...
+            const title = document.getElementById('announcement-title').value.trim();
+            const content = document.getElementById('announcement-content').value.trim();
+            const targetClass = document.getElementById('announcement-class').value;
+            if (!title || !content || !targetClass) {
+                alert('Harap isi semua kolom pengumuman.'); return;
+            }
+            try {
+                await db.collection('announcements').add({
+                    title, content, targetClass,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                alert('Pengumuman berhasil dipublikasikan!');
+                document.getElementById('announcement-title').value = '';
+                document.getElementById('announcement-content').value = '';
+            } catch (error) { console.error("Error publishing: ", error); alert('Gagal mempublikasikan.'); }
+        }
+        
+        // --- FITUR UNPUBLISH (TEACHER) ---
+        function loadTeacherAnnouncements() {
+            // ... (SAMA SEPERTI v3.0, TAPI DENGAN ERROR HANDLING LEBIH JELAS) ...
+            const listElement = document.getElementById('teacher-announcement-list');
+            if (teacherAnnouncementsListener) teacherAnnouncementsListener();
+            teacherAnnouncementsListener = db.collection('announcements').orderBy('createdAt', 'desc')
+                .onSnapshot(snapshot => {
+                    if (snapshot.empty) { listElement.innerHTML = '<p style="text-align:center; font-size: 0.9em;">Belum ada pengumuman.</p>'; return; }
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        html += `<div class="list-item-teacher">
+                                <span><strong>${data.title}</strong> (${data.targetClass})</span>
+                                <button class="delete-btn" data-id="${doc.id}" data-collection="announcements">Hapus</button>
+                            </div>`;
+                    });
+                    listElement.innerHTML = html;
+                }, error => {
+                    console.error("Error load announcements: ", error);
+                    listElement.innerHTML = '<p style="text-align:center; color:red;">Gagal memuat. (Pastikan Poin 1 Firestore Rules sudah benar)</p>';
+                });
+        }
+        
+        function loadTeacherMaterials() {
+            // ... (SAMA SEPERTI v3.0, TAPI DENGAN ERROR HANDLING LEBIH JELAS) ...
+            const listElement = document.getElementById('teacher-material-list');
+            if (teacherMaterialsListener) teacherMaterialsListener();
+            teacherMaterialsListener = db.collection('materials').orderBy('createdAt', 'desc')
+                .onSnapshot(snapshot => {
+                    if (snapshot.empty) { listElement.innerHTML = '<p style="text-align:center; font-size: 0.9em;">Belum ada materi.</p>'; return; }
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        html += `<div class="list-item-teacher">
+                                <span style="margin-right: 10px;">${data.name} (${data.targetClass})</span>
+                                <button class="delete-btn" data-id="${doc.id}" data-collection="materials">Hapus</button>
+                            </div>`;
+                    });
+                    listElement.innerHTML = html;
+                }, error => {
+                    console.error("Error load materials: ", error);
+                    listElement.innerHTML = '<p style="text-align:center; color:red;">Gagal memuat. (Pastikan Poin 1 Firestore Rules sudah benar)</p>';
+                });
+        }
+        
+        function setupDeleteListeners() {
+            // ... (SAMA SEPERTI v3.0, KECUALI HAPUS FILE STORAGE) ...
+            const appContainer = document.getElementById('app-container');
+            appContainer.addEventListener('click', async (e) => {
+                if (e.target && e.target.classList.contains('delete-btn')) {
+                    const id = e.target.dataset.id;
+                    const collection = e.target.dataset.collection;
+                    
+                    if (!id || !collection) return;
+                    if (confirm('Anda yakin ingin menghapus item ini?')) {
+                        try {
+                            await db.collection(collection).doc(id).delete();
+                            // TIDAK perlu hapus dari storage
+                            alert('Item berhasil dihapus (unpublish).');
+                        } catch (error) { console.error("Error deleting: ", error); alert('Gagal menghapus item.'); }
+                    }
+                }
+            });
+        }
+        
+        // --- FITUR REKAP ABSENSI (TEACHER) ---
+        async function viewAttendance() {
+            // ... (SAMA SEPERTI v3.0) ...
+            const date = document.getElementById('attendance-recap-date').value;
+            const targetClass = document.getElementById('attendance-recap-class').value;
+            const listElement = document.getElementById('attendance-recap-list');
+            if (!date || !targetClass) { alert("Harap pilih tanggal dan kelas."); return; }
+            listElement.innerHTML = '<div class="spinner-container"><div class="spinner"></div></div>';
+            
+            try {
+                const snapshot = await db.collection('attendance').doc(date).collection('submissions')
+                                      .where('kelas', '==', targetClass).orderBy('nomorAbsen', 'asc').get();
+                if (snapshot.empty) {
+                    listElement.innerHTML = '<p style="text-align:center; font-size: 0.9em;">Tidak ada data absensi.</p>'; return;
+                }
+                let html = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const time = data.timestamp.toDate().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                    html += `<div class="content-item">
+                            <strong>${data.nomorAbsen}. ${data.nama}</strong>
+                            <small>Absen pada: ${time}</small>
+                        </div>`;
+                });
+                listElement.innerHTML = html;
+            } catch (error) {
+                console.error("Error getting attendance: ", error);
+                listElement.innerHTML = '<p style="text-align:center; color:red;">Gagal mengambil data. (Cek Firestore Rules)</p>';
+            }
+        }
+        
+        // --- FUNGSI GOOGLE DRIVE PICKER (KEMBALI LAGI) ---
+        let tokenClient;
+        function initPicker() {
+            const targetClass = document.getElementById('material-class-target').value;
+            if (!targetClass) {
+                alert("Harap pilih kelas tujuan untuk materi ini."); return;
+            }
+            gapi.load('client:picker', () => gisLoaded(targetClass));
+        }
+        function gisLoaded(targetClass) {
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: GOOGLE_CLIENT_ID,
+                scope: 'https://www.googleapis.com/auth/drive.readonly',
+                callback: (tokenResponse) => {
+                     if (tokenResponse.error) { throw(tokenResponse); }
+                     initializePicker(tokenResponse.access_token, targetClass);
+                },
+            });
+            tokenClient.requestAccessToken({prompt: 'consent'});
+        }
+        async function initializePicker(accessToken, targetClass) {
+            await gapi.client.init({ apiKey: GOOGLE_API_KEY });
+            gapi.client.setToken({ access_token: accessToken });
+            document.getElementById('upload-status').innerText = 'Membuka pemilih file...';
+            createPicker(accessToken, targetClass);
+        }
+        function createPicker(token, targetClass) {
+            const view = new google.picker.View(google.picker.ViewId.DOCS);
+            view.setMimeTypes("application/pdf,application/vnd.google-apps.presentation,application/vnd.google-apps.document,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.openxmlformats-officedocument.presentationml.presentation");
+            const picker = new google.picker.PickerBuilder()
+                .enableFeature(google.picker.Feature.NAV_HIDDEN)
+                .setAppId(APP_ID).setOAuthToken(token).addView(view)
+                .addView(new google.picker.DocsUploadView())
+                .setDeveloperKey(GOOGLE_API_KEY)
+                .setCallback((data) => pickerCallback(data, targetClass))
+                .build();
+            picker.setVisible(true);
+        }
+        async function pickerCallback(data, targetClass) {
+            if (data.action === google.picker.Action.PICKED) {
+                const doc = data.docs[0];
+                document.getElementById('upload-status').innerText = `Menyimpan "${doc.name}"...`;
+                try {
+                    // Simpan LINK-nya ke Firestore
+                    await db.collection('materials').add({
+                        name: doc.name, 
+                        url: doc.url || doc.embedUrl, // URL link file
+                        iconUrl: doc.iconUrl, // Ikon file
+                        targetClass: targetClass,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    alert(`Materi "${doc.name}" berhasil dipublikasikan!`);
+                } catch (error) {
+                    console.error("Error saving material:", error); alert("Gagal menyimpan materi.");
+                } finally {
+                     document.getElementById('upload-status').innerText = '';
+                     document.getElementById('material-class-target').value = '';
+                }
+            } else if (data.action === google.picker.Action.CANCEL) {
+                document.getElementById('upload-status').innerText = '';
+            }
+        }
+        
+        
+        // =================================================================
+        // == STUDENT DASHBOARD LOGIC (ABSENSI SIMPLE)
+        // =================================================================
+        
+        let studentAnnouncementsListener = null; // Ganti nama variabel
+        let studentMaterialsListener = null; // Ganti nama variabel
+        let currentUser = null;
+        let currentUserData = null;
+
+        function initializeStudentDashboard(user, userData) {
+            // ... (SAMA SEPERTI v3.0) ...
+            currentUser = user;
+            currentUserData = userData;
+            
+            document.getElementById('student-welcome').textContent = `Hai, ${user.displayName.split(' ')[0]}!`;
+            setupLogout('student-logout-btn');
+
+            const classSelectorDiv = document.getElementById('student-class-selector');
+            const mainContentDiv = document.getElementById('student-main-content');
+            
+            if (!userData.class) {
+                classSelectorDiv.style.display = 'block';
+                mainContentDiv.style.display = 'none';
+            } else {
+                classSelectorDiv.style.display = 'none';
+                mainContentDiv.style.display = 'block';
+                loadStudentContent(userData.class);
+                checkStudentAttendance(); 
+            }
+
+            document.getElementById('save-class-btn').onclick = async () => {
+                const selectedClass = document.getElementById('student-class-options').value;
+                if (selectedClass) {
+                    await db.collection('users').doc(user.uid).update({ class: selectedClass });
+                    alert(`Kelas Anda telah disimpan sebagai ${selectedClass}.`);
+                    initializeStudentDashboard(user, {...userData, class: selectedClass});
+                }
+            };
+            
+            document.getElementById('submit-attendance-btn').onclick = submitAttendance;
+            showPage('student-dashboard-page');
+        }
+        
+        // --- FITUR ABSENSI (STUDENT) - Simple ---
+        function getTodayDateString() {
+            return new Date().toISOString().slice(0, 10); // Format: YYYY-MM-DD
+        }
+
+        async function checkStudentAttendance() {
+            // ... (SAMA SEPERTI v3.0, TAPI DENGAN ERROR HANDLING LEBIH JELAS) ...
+            const dateStr = getTodayDateString();
+            const attendanceStatusEl = document.getElementById('attendance-status');
+            const attendanceInputEl = document.getElementById('attendance-input');
+            const attendanceBtnEl = document.getElementById('submit-attendance-btn');
+            
+            try {
+                const doc = await db.collection('attendance').doc(dateStr).collection('submissions').doc(currentUser.uid).get();
+                if (doc.exists) {
+                    attendanceStatusEl.textContent = `Anda sudah absen hari ini (No. ${doc.data().nomorAbsen}).`;
+                    attendanceStatusEl.style.color = 'green';
+                    attendanceInputEl.disabled = true;
+                    attendanceBtnEl.disabled = true;
+                    attendanceInputEl.value = doc.data().nomorAbsen;
+                } else {
+                    attendanceStatusEl.textContent = 'Anda BELUM absensi hari ini.';
+                    attendanceStatusEl.style.color = 'var(--danger-color)';
+                    attendanceInputEl.disabled = false;
+                    attendanceBtnEl.disabled = false;
+                }
+            } catch (error) {
+                 console.error("Error checking attendance: ", error);
+                 attendanceStatusEl.textContent = "Gagal memuat status absensi. (Cek Firestore Rules)";
+                 attendanceStatusEl.style.color = 'red';
+                 attendanceBtnEl.disabled = true;
+            }
+        }
+
+        async function submitAttendance() {
+            // ... (SAMA SEPERTI v3.0) ...
+            const nomorAbsen = document.getElementById('attendance-input').value.trim();
+            const userClass = currentUserData.class;
+            const userName = currentUser.displayName;
+            
+            if (!nomorAbsen || isNaN(nomorAbsen) || nomorAbsen < 1 || nomorAbsen > 40) {
+                alert(`Nomor absen tidak valid. Harap masukkan angka (contoh: 15).`); return;
+            }
+            
+            const attendanceBtnEl = document.getElementById('submit-attendance-btn');
+            attendanceBtnEl.disabled = true;
+            attendanceBtnEl.textContent = "Memproses...";
+            
+            try {
+                const dateStr = getTodayDateString();
+                const attendanceRef = db.collection('attendance').doc(dateStr).collection('submissions').doc(currentUser.uid);
+                
+                await attendanceRef.set({
+                    nomorAbsen: parseInt(nomorAbsen),
+                    kelas: userClass,
+                    nama: userName,
+                    userId: currentUser.uid,
+                    email: currentUser.email,
+                    timestamp: new Date()
+                });
+                
+                alert('Absensi berhasil dicatat!');
+                checkStudentAttendance(); // Update UI
+            } catch (error) {
+                console.error("Error submitting attendance: ", error);
+                alert('Gagal mencatat absensi. (Mungkin Anda sudah absen?)');
+                attendanceBtnEl.disabled = false;
+                attendanceBtnEl.textContent = "Kirim Absensi";
+            }
+        }
+        
+        // --- Load Konten (Siswa) ---
+        function loadStudentContent(studentClass) {
+            // ... (SAMA SEPERTI v3.0, TAPI DENGAN ICON MATERI DIUBAH) ...
+            const announcementList = document.getElementById('announcement-list');
+            const materialList = document.getElementById('material-list');
+            
+            if (studentAnnouncementsListener) studentAnnouncementsListener();
+            if (studentMaterialsListener) studentMaterialsListener();
+
+            studentAnnouncementsListener = db.collection('announcements')
+                .where('targetClass', 'in', [studentClass, 'SEMUA KELAS'])
+                .orderBy('createdAt', 'desc').limit(10)
+                .onSnapshot(snapshot => {
+                    if (snapshot.empty) { announcementList.innerHTML = '<p style="text-align:center;">Belum ada pengumuman.</p>'; return; }
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        const date = data.createdAt ? data.createdAt.toDate().toLocaleDateString('id-ID', {day:'numeric', month:'long'}) : '';
+                        html += `<div class="content-item"><strong>${data.title}</strong><p>${data.content}</p><small>${date}</small></div>`;
+                    });
+                    announcementList.innerHTML = html;
+                }, error => { announcementList.innerHTML = '<p style="text-align:center; color:red;">Gagal memuat pengumuman.</p>'; });
+
+            studentMaterialsListener = db.collection('materials')
+                 .where('targetClass', 'in', [studentClass, 'SEMUA KELAS'])
+                 .orderBy('createdAt', 'desc').limit(10)
+                 .onSnapshot(snapshot => {
+                    if (snapshot.empty) { materialList.innerHTML = '<p style="text-align:center;">Belum ada materi belajar.</p>'; return; }
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                         html += `<a href="${data.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; color:inherit;">
+                                <div class="content-item" style="display:flex; align-items:center; gap:12px;">
+                                    <img src="${data.iconUrl || 'https://www.gstatic.com/images/branding/product/1x/google_drive_32dp.png'}" alt="file" style="width:24px; height:24px; flex-shrink:0;">
+                                    <span style="font-weight: 500;">${data.name}</span>
+                                </div>
+                            </a>`;
+                    });
+                    materialList.innerHTML = html;
+                 }, error => { materialList.innerHTML = '<p style="text-align:center; color:red;">Gagal memuat materi.</p>'; });
+        }
+    </script>
+
+</body>
+</html>
