@@ -1,0 +1,1625 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>e-Learning English by Mam Yanti</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* (CSS LENGKAP - Ada tambahan untuk UI baru v8.0) */
+        :root {
+            --primary-color: #4A90E2; --secondary-color: #50E3C2; --text-color: #4A4A4A;
+            --danger-color: #E24A4A; --bg-color: #F7F9FC; --card-bg: #FFFFFF; --border-color: #EAEAEA;
+            --warning-bg: #FFFBEB; --warning-border: #FDE68A;
+            --chat-self-bg: #E1F5FE; --chat-other-bg: #F1F3F4;
+            --success-color: #28a745; --success-bg: #EAF7EC;
+            
+            /* v8.0: Warna Jawaban */
+            --answer-red: #E24A4A;
+            --answer-blue: #4A90E2;
+            --answer-green: #28a745;
+            --answer-yellow: #F5A623;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-color);
+            display: flex; justify-content: center; align-items: center; min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #app-container {
+            width: 100%; max-width: 480px; height: 100vh; background-color: var(--card-bg);
+            display: flex; flex-direction: column; overflow: hidden;
+            @media (min-width: 481px) {
+                max-height: 90vh; min-height: 700px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            }
+        }
+        .page { flex-grow: 1; overflow-y: auto; padding: 25px; display: none; }
+        .page.active { display: block; }
+        
+        .sub-page { display: none; flex-grow: 1; flex-direction: column; }
+        .sub-page.active { display: flex; }
+        
+        #login-page {
+            display: none; flex-direction: column; justify-content: center; align-items: center; text-align: center;
+            background: linear-gradient(180deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+        }
+        #login-page.active { display: flex; }
+        .login-card { background: var(--card-bg); padding: 40px 30px; border-radius: 20px; width: 90%; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .login-card h1 { color: var(--primary-color); font-weight: 700; font-size: 1.8em; }
+        .login-card h2 { font-weight: 400; font-size: 1.2em; margin-bottom: 25px; }
+        .login-card p { font-size: 0.9em; margin-bottom: 25px; }
+        button {
+            display: inline-flex; align-items: center; justify-content: center; gap: 10px; width: 100%;
+            padding: 12px 20px; border-radius: 12px; font-size: 1em; font-family: 'Poppins', sans-serif;
+            cursor: pointer; transition: all 0.2s ease; border: none; font-weight: 500;
+        }
+        button.primary { background-color: var(--primary-color); color: white; }
+        button.primary:hover { background-color: #3a7bc8; }
+        button.primary:disabled { background-color: #aaa; }
+        button.secondary { background-color: var(--secondary-color); color: #333; }
+        button.secondary:hover { background-color: #3ddab7; }
+        button#login-btn { background-color: #fff; color: var(--text-color); border: 1px solid var(--border-color); }
+        button#login-btn:hover { background-color: #f5f5f5; }
+        button img { width: 22px; }
+        input, textarea, select {
+            width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--border-color);
+            margin-bottom: 15px; font-family: 'Poppins', sans-serif; font-size: 1em; background-color: #fdfdfd;
+        }
+        input[type="number"].pin-input {
+            font-size: 2em; text-align: center; font-weight: 600; letter-spacing: 5px;
+            padding: 15px; margin-bottom: 20px;
+        }
+        textarea { resize: vertical; min-height: 80px; }
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
+        .header h1 { font-size: 1.5em; font-weight: 600; }
+        .logout-btn { background: none; border: none; color: var(--primary-color); font-size: 1.5em; cursor: pointer; width: auto; padding: 5px; }
+        .back-btn { background: none; border: none; color: var(--primary-color); font-size: 1.5em; cursor: pointer; width: auto; padding: 5px; }
+        .feature-card {
+            background: var(--card-bg); border: 1px solid var(--border-color); border-radius: 15px;
+            padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+        .feature-card h3 {
+            margin-bottom: 15px; font-size: 1.1em; font-weight: 600; border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px; display: flex; align-items: center; gap: 10px;
+        }
+        .content-list { max-height: 250px; overflow-y: auto; }
+        .content-item { padding: 15px 5px; border-bottom: 1px solid var(--border-color); }
+        .content-item:last-child { border-bottom: none; }
+        .content-item strong { display: block; margin-bottom: 5px; color: var(--primary-color); }
+        .content-item p { font-size: 0.95em; line-height: 1.5; white-space: pre-wrap; }
+        .content-item small { font-size: 0.8em; color: #9B9B9B; }
+        
+        .list-item-teacher { display: flex; justify-content: space-between; align-items: center; padding: 12px 5px; border-bottom: 1px solid var(--border-color); }
+        .list-item-teacher:last-child { border-bottom: none; }
+        .list-item-teacher span { flex-grow: 1; font-size: 0.9em; word-break: break-all; }
+        .list-item-teacher .code { font-weight: 700; color: var(--primary-color); font-size: 1.1em; }
+        .delete-btn { background: var(--danger-color); color: white; border: none; border-radius: 8px; padding: 5px 10px; font-size: 0.8em; width: auto; cursor: pointer; }
+
+        .guide-box { background: var(--warning-bg); border: 1px solid var(--warning-border); padding: 15px; border-radius: 10px; margin-bottom: 15px; }
+        .guide-box h4 { font-weight: 600; margin-bottom: 10px; }
+        .guide-box p { font-size: 0.9em; line-height: 1.6; }
+        .guide-box ol { padding-left: 20px; font-size: 0.9em; line-height: 1.6; }
+
+        .spinner-container { display: flex; justify-content: center; align-items: center; padding: 20px; }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1); width: 36px; height: 36px; border-radius: 50%;
+            border-left-color: var(--primary-color); animation: spin 1s ease infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* == CSS v5.0 (CHAT) == */
+        .chat-page-container { display: flex; flex-direction: column; flex-grow: 1; border: 1px solid var(--border-color); border-radius: 15px; overflow: hidden; }
+        .chat-messages { flex-grow: 1; padding: 15px; overflow-y: auto; background-color: #fdfdfd; }
+        .chat-message { display: flex; flex-direction: column; margin-bottom: 12px; max-width: 80%; }
+        .chat-message .sender { font-size: 0.8em; font-weight: 600; margin-bottom: 4px; color: var(--primary-color); }
+        .chat-message .bubble { padding: 10px 14px; border-radius: 18px; font-size: 0.95em; line-height: 1.5; }
+        .chat-message .timestamp { font-size: 0.7em; color: #9B9B9B; margin-top: 4px; }
+        .chat-message.other { align-items: flex-start; }
+        .chat-message.other .bubble { background-color: var(--chat-other-bg); border-top-left-radius: 4px; }
+        .chat-message.other .timestamp { text-align: left; }
+        .chat-message.self { align-items: flex-end; align-self: flex-end; }
+        .chat-message.self .sender { display: none; }
+        .chat-message.self .bubble { background-color: var(--chat-self-bg); border-top-right-radius: 4px; color: #333; }
+        .chat-message.self .timestamp { text-align: right; }
+        .chat-input-area { display: flex; padding: 15px; border-top: 1px solid var(--border-color); background-color: var(--card-bg); }
+        .chat-input-area input { flex-grow: 1; margin-bottom: 0; margin-right: 10px; }
+        .chat-input-area button { width: auto; padding: 10px 15px; }
+        
+        /* == CSS v6.0 (KUIS) == */
+        .quiz-item-title { font-weight: 600; color: var(--primary-color); cursor: pointer; flex-grow: 1; }
+        .quiz-item-title:hover { text-decoration: underline; }
+        label.input-label { font-size: 0.9em; font-weight: 500; margin-bottom: 5px; display: block; }
+        .question-form-options { display: grid; grid-template-columns: 1fr; gap: 10px; }
+        .question-form-options input { margin-bottom: 0; }
+        .question-item { padding: 15px 5px; border-bottom: 1px solid var(--border-color); }
+        .question-item:last-child { border-bottom: none; }
+        .question-item strong { font-size: 1.05em; display: block; margin-bottom: 10px; line-height: 1.5; }
+        .question-item .options-list { list-style: none; padding-left: 5px; }
+        .question-item .options-list li { font-size: 0.9em; padding: 5px; border-radius: 5px; margin-bottom: 5px; }
+        .question-item .options-list li.correct { background-color: var(--success-bg); color: var(--success-color); font-weight: 600; border-left: 3px solid var(--success-color); }
+        .question-item .delete-btn { margin-top: 10px; float: right; }
+
+        /* == CSS v7.0 (LOBBY KUIS) == */
+        #lobby-pin-display { font-size: 4.5em; font-weight: 700; text-align: center; color: var(--primary-color); letter-spacing: 5px; margin: 10px 0 20px 0; user-select: all; }
+        #lobby-player-list-container { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .lobby-player-item { background: var(--bg-color); border: 1px solid var(--border-color); padding: 10px 15px; border-radius: 10px; font-weight: 500; text-align: center; font-size: 0.95em; }
+        .lobby-waiting-text { font-size: 1.2em; font-weight: 500; text-align: center; padding: 20px 0; }
+        .quiz-item-actions { display: flex; flex-direction: column; gap: 8px; width: 100px; }
+        .quiz-item-actions .start-session-btn { background: var(--secondary-color); color: #333; font-size: 0.8em; padding: 5px 10px; width: auto; }
+
+        /* ==================================== */
+        /* == CSS TAMBAHAN v8.0 (GAME KUIS) == */
+        /* ==================================== */
+        .quiz-game-page { /* Penampung halaman game agar header/footer bisa fixed */
+            display: flex; flex-direction: column; flex-grow: 1;
+        }
+        .quiz-game-header { text-align: center; padding: 10px; }
+        .quiz-game-header h2 { font-size: 1.2em; font-weight: 600; }
+        .quiz-game-header p { font-size: 1em; color: #777; }
+        
+        .quiz-game-timer {
+            font-size: 2.5em; font-weight: 700; color: var(--primary-color);
+            text-align: center; margin: 15px 0;
+        }
+        
+        .quiz-question-text {
+            font-size: 1.2em; font-weight: 600; text-align: center;
+            line-height: 1.6; margin-bottom: 25px; padding: 15px;
+            background: var(--bg-color); border-radius: 10px;
+        }
+        
+        .quiz-answer-options {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+            flex-grow: 1;
+        }
+        .answer-btn {
+            padding: 20px; font-size: 1.1em; font-weight: 600;
+            color: white; border-radius: 10px; height: 100px;
+            display: flex; align-items: center; justify-content: center;
+            text-align: center; line-height: 1.4;
+        }
+        .answer-btn:disabled {
+            opacity: 0.7; filter: grayscale(50%);
+        }
+        .answer-btn.selected { /* Jawaban yg dipilih */
+            border: 5px solid white; box-shadow: 0 0 15px rgba(0,0,0,0.3);
+            transform: scale(1.05);
+        }
+        
+        #answer-btn-0 { background-color: var(--answer-red); }
+        #answer-btn-1 { background-color: var(--answer-blue); }
+        #answer-btn-2 { background-color: var(--answer-yellow); }
+        #answer-btn-3 { background-color: var(--answer-green); }
+        
+        .quiz-game-footer {
+            text-align: center; padding: 15px 0;
+            font-weight: 500; font-size: 1.1em;
+        }
+        
+        /* v8.0: CSS untuk halaman game Guru */
+        .teacher-answer-options {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
+        }
+        .teacher-answer-item {
+            padding: 15px; border-radius: 10px;
+            font-weight: 500; color: white;
+            display: flex; align-items: center; min-height: 80px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="app-container">
+
+        <div id="login-page" class="page active">
+            <div class="login-card">
+                <h1>e-Learning English</h1>
+                <h2>by Mam Yanti</h2>
+                <p>Silakan masuk dengan Akun Google Anda untuk memulai pembelajaran.</p>
+                <button id="login-btn">
+                    <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google Logo">
+                    <span>Masuk dengan Google</span>
+                </button>
+                <div class="spinner-container" style="display: none;" id="login-spinner">
+                    <div class="spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="teacher-dashboard-page" class="page">
+            
+            <div id="teacher-main-menu" class="sub-page active">
+                <div class="header">
+                    <h1 id="teacher-welcome">Hai, Mam Yanti!</h1>
+                    <button class="logout-btn" id="teacher-logout-btn" title="Keluar"><i class="fa-solid fa-right-from-bracket"></i></button>
+                </div>
+                <div class="feature-card">
+                    <h3><i class="fa-solid fa-chalkboard-user"></i> Manajemen Kelas</h3>
+                    <input type="text" id="class-name-input" placeholder="Nama Kelas Baru (Cth: XII-1)">
+                    <button class="primary" id="create-class-btn">Buat Kelas Baru</button>
+                    <h3 style="margin-top: 20px;"><i class="fa-solid fa-list-ul"></i> Daftar Kelas & Kode</h3>
+                    <div id="class-code-list" class="content-list">
+                        <div class="spinner-container"><div class="spinner"></div></div>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <h3><i class="fa-solid fa-puzzle-piece"></i> Manajemen Kuis (Bank Soal)</h3>
+                    <button class="primary" id="go-to-quiz-btn">Buka Manajemen Kuis</button>
+                </div>
+                <div class="feature-card">
+                    <h3><i class="fa-solid fa-comments"></i> Chat Kelas Interaktif</h3>
+                    <button class="primary" id="go-to-chat-btn-teacher">Buka Chat Kelas</button>
+                </div>
+                <div class="feature-card">
+                    <h3><i class="fa-solid fa-file-pen"></i> Manajemen Tugas</h3>
+                    <button class="primary" id="go-to-create-task-btn">Buat Slot Tugas Baru</button>
+                    <h3 style="margin-top: 20px;"><i class="fa-solid fa-list-ul"></i> Daftar Tugas Aktif</h3>
+                    <div id="teacher-assignment-list" class="content-list">
+                        <div class="spinner-container"><div class="spinner"></div></div>
+                    </div>
+                </div>
+                <div class="feature-card">
+                    <h3><i class="fa-solid fa-bullhorn"></i> Buat Pengumuman</h3>
+                    <button class="primary" id="go-to-announcements-btn">Buka Manajemen Pengumuman</button>
+                </div>
+                <div class="feature-card">
+                    <h3><i class="fa-solid fa-cloud-arrow-up"></i> Upload Materi (dari Google Drive)</h3>
+                    <button class="primary" id="go-to-materials-btn">Buka Manajemen Materi</button>
+                </div>
+                <div class="feature-card">
+                    <h3><i class="fa-solid fa-clipboard-user"></i> Rekap Absensi Siswa</h3>
+                    <button class="primary" id="go-to-attendance-btn">Buka Rekap Absensi</button>
+                </div>
+            </div>
+
+            <div id="teacher-task-page" class="sub-page">
+                <div class="header">
+                    <button class="back-btn" data-target="teacher-main-menu"><i class="fa-solid fa-arrow-left"></i></button>
+                    <h1>Manajemen Tugas</h1>
+                </div>
+                <div class="feature-card">
+                    <h3>Buat Slot Tugas Baru</h3>
+                    <input type="text" id="task-title" placeholder="Judul Tugas">
+                    <textarea id="task-desc" placeholder="Deskripsi/Instruksi Tugas..."></textarea>
+                    <label style="font-size: 0.9em; margin-bottom: 5px; display: block;">Tenggat Waktu:</label>
+                    <input type="date" id="task-deadline">
+                    <select id="task-class-target">
+                        <option value="">-- Pilih Kelas Tujuan --</option>
+                        </select>
+                    <button class="primary" id="create-task-btn">Publikasikan Tugas</button>
+                </div>
+                <div id="teacher-view-submissions-div" class="feature-card" style="display:none;">
+                    <h3 id="submission-list-title">...</h3>
+                    <div id="submission-list-container" class="content-list"></div>
+                </div>
+            </div>
+
+            <div id="teacher-announcement-page" class="sub-page">
+                <div class="header">
+                    <button class="back-btn" data-target="teacher-main-menu"><i class="fa-solid fa-arrow-left"></i></button>
+                    <h1>Manajemen Pengumuman</h1>
+                </div>
+                <div class="feature-card">
+                    <h3>Buat Pengumuman Baru</h3>
+                    <input type="text" id="announcement-title" placeholder="Judul Pengumuman">
+                    <textarea id="announcement-content" rows="3" placeholder="Isi pengumuman..."></textarea>
+                    <select id="announcement-class-target">
+                        <option value="">-- Pilih Kelas Tujuan --</option>
+                        </select>
+                    <button class="primary" id="publish-announcement-btn">Publikasikan</button>
+                </div>
+                <div class="feature-card">
+                    <h3>Riwayat Pengumuman</h3>
+                    <div id="teacher-announcement-list" class="content-list"></div>
+                </div>
+            </div>
+
+            <div id="teacher-material-page" class="sub-page">
+                <div class="header">
+                    <button class="back-btn" data-target="teacher-main-menu"><i class="fa-solid fa-arrow-left"></i></button>
+                    <h1>Manajemen Materi</h1>
+                </div>
+                <div class="feature-card">
+                    <h3>Upload Materi (dari Google Drive)</h3>
+                    <select id="material-class-target">
+                        <option value="">-- Pilih Kelas Tujuan --</option>
+                        </select>
+                    <button id="upload-material-btn" style="margin-top: 10px;"><i class="fa-brands fa-google-drive"></i> Pilih File dari Google Drive</button>
+                    <p id="upload-status" style="text-align: center; margin-top: 10px; font-size: 0.9em;"></p>
+                </div>
+                <div class="feature-card">
+                    <h3>Daftar Materi Terupload</h3>
+                    <div id="teacher-material-list" class="content-list"></div>
+                </div>
+            </div>
+
+            <div id="teacher-attendance-page" class="sub-page">
+                <div class="header">
+                    <button class="back-btn" data-target="teacher-main-menu"><i class="fa-solid fa-arrow-left"></i></button>
+                    <h1>Rekap Absensi</h1>
+                </div>
+                <div class="feature-card">
+                    <h3>Pilih Kelas & Tanggal</h3>
+                    <input type="date" id="attendance-recap-date">
+                    <select id="attendance-recap-class">
+                        <option value="">-- Pilih Kelas --</option>
+                        </select>
+                    <button class="primary" id="view-attendance-btn">Tampilkan Rekap</button>
+                    <div id="attendance-recap-list" class="content-list" style="margin-top: 15px;"></div>
+                </div>
+            </div>
+            
+            <div id="teacher-chat-page" class="sub-page">
+                <div class="header">
+                    <button class="back-btn" data-target="teacher-main-menu"><i class="fa-solid fa-arrow-left"></i></button>
+                    <h1>Chat Kelas</h1>
+                </div>
+                <div class="feature-card" style="margin-bottom: 15px;">
+                    <h3>Pilih Kelas untuk Chat</h3>
+                    <select id="chat-class-select-teacher">
+                        <option value="">-- Pilih Kelas --</option>
+                    </select>
+                </div>
+                <div class="chat-page-container">
+                    <div class="chat-messages" id="chat-messages-teacher">
+                        <p style="text-align: center; padding: 20px; color: #999;">Pilih kelas untuk memulai chat.</p>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chat-input-teacher" placeholder="Ketik pesan..." disabled>
+                        <button id="send-chat-btn-teacher" class="primary" disabled><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="teacher-quiz-page" class="sub-page">
+                <div class="header">
+                    <button class="back-btn" data-target="teacher-main-menu"><i class="fa-solid fa-arrow-left"></i></button>
+                    <h1>Manajemen Kuis</h1>
+                </div>
+                <div class="feature-card">
+                    <h3>Buat Kuis Baru</h3>
+                    <input type="text" id="quiz-title" placeholder="Judul Kuis (Cth: Kuis Bab 1 Tenses)">
+                    <textarea id="quiz-description" placeholder="Deskripsi singkat kuis..." rows="2"></textarea>
+                    <button class="primary" id="create-quiz-btn">Buat Kuis</button>
+                </div>
+                <div class="feature-card">
+                    <h3>Daftar Kuis (Bank Soal)</h3>
+                    <label class="input-label" for="quiz-class-target-select">Pilih Kelas Target Sesi:</label>
+                    <select id="quiz-class-target-select">
+                        <option value="">-- Pilih Kelas Dulu --</option>
+                    </select>
+                    <hr style="border:none; border-top: 1px solid var(--border-color); margin: 15px 0;">
+                    <div id="quiz-list-container" class="content-list">
+                        <div class="spinner-container"><div class="spinner"></div></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="teacher-quiz-detail-page" class="sub-page">
+                <div class="header">
+                    <button class="back-btn" data-target="teacher-quiz-page"><i class="fa-solid fa-arrow-left"></i></button>
+                    <h1 id="quiz-detail-title">Detail Kuis</h1>
+                </div>
+                <div class="feature-card">
+                    <h3>Tambah Pertanyaan Baru</h3>
+                    <label class="input-label" for="question-text">Tulis Pertanyaan:</label>
+                    <textarea id="question-text" rows="3" placeholder="Cth: He ___ to school yesterday."></textarea>
+                    <div class="question-form-options">
+                        <label class="input-label">Opsi Jawaban:</label>
+                        <input type="text" id="option-0" placeholder="Opsi A (Cth: go)">
+                        <input type="text" id="option-1" placeholder="Opsi B (Cth: goes)">
+                        <input type="text" id="option-2" placeholder="Opsi C (Cth: went)">
+                        <input type="text" id="option-3" placeholder="Opsi D (Cth: gone)">
+                    </div>
+                    <label class="input-label" for="correct-answer-select">Jawaban Benar:</label>
+                    <select id="correct-answer-select">
+                        <option value="0">Opsi A</option>
+                        <option value="1">Opsi B</option>
+                        <option value="2">Opsi C</option>
+                        <option value="3">Opsi D</option>
+                    </select>
+                    <button class="primary" id="add-question-btn">Tambah Pertanyaan</button>
+                </div>
+                <div class="feature-card">
+                    <h3>Daftar Pertanyaan</h3>
+                    <div id="question-list-container" class="content-list">
+                        <div class="spinner-container"><div class="spinner"></div></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="teacher-quiz-lobby-page" class="sub-page">
+                <div class="header">
+                    <button class="back-btn" data-target="teacher-quiz-page"><i class="fa-solid fa-arrow-left"></i></button>
+                    <h1>Lobi Kuis: <span id="lobby-quiz-title-teacher">...</span></h1>
+                </div>
+                <div class="feature-card" style="text-align: center;">
+                    <h3>PIN Kuis (Bagikan ke Siswa)</h3>
+                    <h1 id="lobby-pin-display">...</h1>
+                    <p>Siswa dari kelas <strong id="lobby-class-target-teacher">...</strong> bisa bergabung.</p>
+                </div>
+                <div class="feature-card">
+                    <h3>Siswa Bergabung (<span id="lobby-player-count-teacher">0</span>)</h3>
+                    <div id="lobby-player-list-teacher" class="lobby-player-list-container">
+                        <p style="text-align:center; grid-column: 1 / -1; color: #999;">Menunggu siswa bergabung...</p>
+                    </div>
+                </div>
+                <button class="primary" id="start-quiz-game-btn" style="padding: 15px; font-size: 1.2em;">
+                    <i class="fa-solid fa-rocket"></i> Mulai Kuis!
+                </button>
+            </div>
+            
+            <div id="teacher-quiz-game-page" class="sub-page">
+                <div class="quiz-game-page">
+                    <div class="quiz-game-header">
+                        <h2 id="teacher-question-number">Pertanyaan 1 / 10</h2>
+                        <p id="teacher-quiz-title">Kuis Tenses</p>
+                    </div>
+                    
+                    <h1 class="quiz-question-text" id="teacher-question-text">...</h1>
+                    
+                    <div class="teacher-answer-options">
+                        <div class="teacher-answer-item" style="background-color: var(--answer-red);" id="teacher-option-0">...</div>
+                        <div class="teacher-answer-item" style="background-color: var(--answer-blue);" id="teacher-option-1">...</div>
+                        <div class="teacher-answer-item" style="background-color: var(--answer-yellow);" id="teacher-option-2">...</div>
+                        <div class="teacher-answer-item" style="background-color: var(--answer-green);" id="teacher-option-3">...</div>
+                    </div>
+                    
+                    <div class="quiz-game-footer" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
+                        <h2 style="font-size: 2em;" id="teacher-answer-count">0</h2>
+                        <p style="font-size: 1.2em; color: #777;">Siswa Telah Menjawab</p>
+                    </div>
+                    
+                    <button class="primary" id="next-question-btn" disabled>Tampilkan Jawaban (Segera Hadir di v9.0)</button>
+                </div>
+            </div>
+            </div>
+
+        <div id="student-dashboard-page" class="page">
+            
+            <div id="student-main-menu" class="sub-page active">
+                <div class="header">
+                    <h1 id="student-welcome">Selamat Datang!</h1>
+                    <button class="logout-btn" id="student-logout-btn" title="Keluar"><i class="fa-solid fa-right-from-bracket"></i></button>
+                </div>
+                <div id="student-join-class" style="display:none;" class="feature-card">
+                    <h3><i class="fa-solid fa-door-open"></i> Gabung Kelas</h3>
+                    <p>Anda belum terdaftar di kelas manapun. Silakan masukkan "Kode Kelas" yang diberikan oleh Mam Yanti.</p>
+                    <input type="text" id="class-code-input" placeholder="Masukkan Kode Kelas (Cth: ABCDE1)">
+                    <button class="primary" id="join-class-btn">Gabung Kelas</button>
+                </div>
+                <div id="student-main-content" style="display:none;">
+                    <div class="feature-card">
+                        <h3><i class="fa-solid fa-gamepad"></i> Kuis Live</h3>
+                        <p style="text-align: center; font-size: 0.9em; margin-bottom: 15px;">Gabung ke sesi kuis live yang diadakan oleh Mam Yanti!</p>
+                        <button class="secondary" id="go-to-quiz-join-btn-student">Gabung Kuis Live</button>
+                    </div>
+                    <div class="feature-card">
+                        <h3><i class="fa-solid fa-user-check"></i> Absensi Hari Ini</h3>
+                        <p id="attendance-status" style="text-align: center; margin-bottom: 15px;">Memeriksa status...</p>
+                        <input type="number" id="attendance-input" placeholder="Masukkan Nomor Absen Anda" style="margin-bottom: 10px;">
+                        <button class="primary" id="submit-attendance-btn" disabled>Kirim Absensi</button>
+                    </div>
+                    <div class="feature-card">
+                        <h3><i class="fa-solid fa-comments"></i> Chat Kelas</h3>
+                        <button class="primary" id="go-to-chat-btn-student">Buka Chat Kelas</button>
+                    </div>
+                    <div class="feature-card">
+                        <h3><i class="fa-solid fa-bullhorn"></i> Pengumuman</h3>
+                        <div id="announcement-list" class="content-list">
+                            <div class="spinner-container"><div class="spinner"></div></div>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <h3><i class="fa-solid fa-book-open"></i> Materi Belajar</h3>
+                        <div id="material-list" class="content-list">
+                            <div class="spinner-container"><div class="spinner"></div></div>
+                        </div>
+                    </div>
+                    <div class="feature-card">
+                        <h3><i class="fa-solid fa-file-pen"></i> Daftar Tugas</h3>
+                        <div id="assignment-list-student" class="content-list">
+                            <div class="spinner-container"><div class="spinner"></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="student-task-page" class="sub-page">
+                <div class="header">
+                    <button class="back-btn" data-target="student-main-menu"><i class="fa-solid fa-arrow-left"></i></button>
+                    <h1 id="task-detail-title">Kirim Tugas</h1>
+                </div>
+                <div class="feature-card">
+                    <h3 id="task-detail-desc-title">Deskripsi Tugas:</h3>
+                    <p id="task-detail-desc" style="font-size: 0.95em; line-height: 1.6; white-space: pre-wrap; margin-bottom: 15px;"></p>
+                    <small id="task-detail-deadline" style="font-weight: 600; color: var(--danger-color);"></small>
+                </div>
+                <div class="feature-card">
+                    <h3><i class="fa-solid fa-link"></i> Kirim Link Google Drive</h3>
+                    <div class="guide-box">
+                        <h4>Cara Mengumpulkan Tugas:</h4>
+                        <ol>
+                            <li>Kerjakan tugas Anda di Google Docs/Slides.</li>
+                            <li>Klik tombol **"Share"** (Bagikan) di pojok kanan atas.</li>
+                            <li>Di bagian "General access", ganti dari "Restricted" menjadi **"Anyone with the link" (Siapa saja yang memiliki link)**.</li>
+                            <li>Pastikan role-nya adalah **"Viewer"** atau **"Commenter"**.</li>
+                            <li>Klik **"Copy link"** (Salin link).</li>
+                            <li>Tempel (paste) link tersebut di kotak di bawah ini.</li>
+                        </ol>
+                    </div>
+                    <input type="url" id="task-link-input" placeholder="Tempel link Google Drive Anda di sini...">
+                    <button class="primary" id="submit-task-btn">Kirim Tugas</button>
+                    <p id="task-submission-status" style="text-align: center; margin-top: 10px; font-weight: 600;"></p>
+                </div>
+            </div>
+            
+            <div id="student-chat-page" class="sub-page">
+                <div class="header">
+                    <button class="back-btn" data-target="student-main-menu"><i class="fa-solid fa-arrow-left"></i></button>
+                    <h1 id="student-chat-title">Chat Kelas</h1>
+                </div>
+                <div class="chat-page-container">
+                    <div class="chat-messages" id="chat-messages-student">
+                        <div class="spinner-container"><div class="spinner"></div></div>
+                    </div>
+                    <div class="chat-input-area">
+                        <input type="text" id="chat-input-student" placeholder="Ketik pesan...">
+                        <button id="send-chat-btn-student" class="primary"><i class="fa-solid fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="student-quiz-join-page" class="sub-page">
+                <div class="header">
+                    <button class="back-btn" data-target="student-main-menu"><i class="fa-solid fa-arrow-left"></i></button>
+                    <h1>Gabung Kuis Live</h1>
+                </div>
+                <div class="feature-card" style="text-align: center;">
+                    <h3>Masukkan PIN Kuis</h3>
+                    <p style="font-size: 0.9em; margin-bottom: 20px;">Dapatkan 6-digit PIN dari Mam Yanti.</p>
+                    <input type="number" id="quiz-pin-input" class="pin-input" placeholder="123456" maxlength="6">
+                    <button class="primary" id="join-quiz-btn">Gabung</button>
+                </div>
+            </div>
+            
+            <div id="student-quiz-lobby-page" class="sub-page">
+                <div class="header">
+                    <h1>Lobi Kuis: <span id="lobby-quiz-title-student">...</span></h1>
+                </div>
+                <div class="feature-card">
+                    <h3 class="lobby-waiting-text"><i class="fa-solid fa-spinner fa-spin"></i> Menunggu Guru Memulai Kuis...</h3>
+                </div>
+                <div class="feature-card">
+                    <h3>Siswa Bergabung (<span id="lobby-player-count-student">0</span>)</h3>
+                    <div id="lobby-player-list-student" class="lobby-player-list-container">
+                        <p style="text-align:center; grid-column: 1 / -1; color: #999;">Menunggu siswa bergabung...</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="student-quiz-game-page" class="sub-page">
+                <div class="quiz-game-page">
+                    <div class="quiz-game-header">
+                        <h2 id="student-question-number">Pertanyaan 1 / 10</h2>
+                        <p id="student-quiz-title">Kuis Tenses</p>
+                    </div>
+                    
+                    <h1 class="quiz-game-timer" id="student-question-timer">20</h1>
+                    
+                    <h1 class="quiz-question-text" id="student-question-text">...</h1>
+                    
+                    <div class="quiz-answer-options">
+                        <button class="answer-btn" id="answer-btn-0" data-index="0">...</button>
+                        <button class="answer-btn" id="answer-btn-1" data-index="1">...</button>
+                        <button class="answer-btn" id="answer-btn-2" data-index="2">...</button>
+                        <button class="answer-btn" id="answer-btn-3" data-index="3">...</button>
+                    </div>
+                    
+                    <div class="quiz-game-footer" id="student-quiz-footer">
+                        Pilih jawabanmu!
+                    </div>
+                </div>
+            </div>
+            </div>
+
+    </div> 
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <script src="https://apis.google.com/js/api.js"></script>
+    <script src="https://accounts.google.com/gsi/client"></script>
+
+    <script type="module">
+        // =================================================================
+        // == KONFIGURASI KUNCI API ==
+        // =================================================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyDpYabA0lb-0uh3Pe-URmeY7WxpIHj7c5Q",
+            authDomain: "e-learning-mamyanti.firebaseapp.com",
+            projectId: "e-learning-mamyanti",
+            storageBucket: "e-learning-mamyanti.appspot.com",
+            messagingSenderId: "198925356373",
+            appId: "1:198925356373:web:754ae2355b925aa50333dc"
+        };
+        
+        const GOOGLE_API_KEY = "AIzaSyBJ9yRe5AYOJGiYwAqlm5wK1La3LhhuS5A";
+        const GOOGLE_CLIENT_ID = "198925356373-mb0ame0q1sh3elqlq4mofgdakn8df9jh.apps.googleusercontent.com";
+        const APP_ID = "198925356373"; 
+        const TEACHER_EMAIL = "elearningmamyanti@gmail.com";
+        // =================================================================
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+        
+        // Variabel Global
+        const pages = document.querySelectorAll('.page');
+        const loginBtn = document.getElementById('login-btn');
+        const loginSpinner = document.getElementById('login-spinner');
+        let currentUser = null;
+        let currentUserData = null;
+
+        // Listener Global untuk unsub
+        let listeners = [];
+        let currentChatListener = null;
+        let currentQuizQuestionsListener = null;
+        
+        // v7.0/v8.0: Variabel & Listener Kuis
+        let currentQuizSessionId = null;
+        let currentLobbyPlayersListener = null;
+        let currentLobbyStateListener = null;
+        let currentAnswerListener = null; // v8.0: Listener jawaban guru
+        let questionTimerInterval = null; // v8.0: Interval timer siswa
+
+        // --- Page Navigation ---
+        function showPage(pageId) {
+            pages.forEach(page => page.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+        }
+        
+        // v8.0: Modifikasi showSubPage untuk unsubscribe semua listener
+        function showSubPage(pageElement, subPageId) {
+            const currentPage = pageElement.querySelector('.sub-page.active');
+            
+            pageElement.querySelectorAll('.sub-page').forEach(sp => sp.classList.remove('active'));
+            pageElement.querySelector(`#${subPageId}`).classList.add('active');
+            
+            if (currentPage) {
+                // Hentikan semua listener spesifik saat pindah halaman
+                if (currentChatListener) { currentChatListener(); currentChatListener = null; }
+                if (currentQuizQuestionsListener) { currentQuizQuestionsListener(); currentQuizQuestionsListener = null; }
+                if (currentLobbyPlayersListener) { currentLobbyPlayersListener(); currentLobbyPlayersListener = null; }
+                if (currentLobbyStateListener) { currentLobbyStateListener(); currentLobbyStateListener = null; }
+                if (currentAnswerListener) { currentAnswerListener(); currentAnswerListener = null; } // v8.0
+                if (questionTimerInterval) { clearInterval(questionTimerInterval); questionTimerInterval = null; } // v8.0
+                
+                // TODO: Logika meninggalkan sesi kuis (misal hapus player)
+                // if (currentPage.id === 'student-quiz-lobby-page' || currentPage.id === 'student-quiz-game-page') {
+                //     leaveQuizSession(); // Fungsi yang akan dibuat nanti
+                // }
+            }
+        }
+        
+        // Setup tombol kembali (Back)
+        document.querySelectorAll('.back-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const targetPageId = btn.dataset.target;
+                const parentPage = btn.closest('.page');
+                showSubPage(parentPage, targetPageId);
+            });
+        });
+        
+        // --- Authentication ---
+        auth.onAuthStateChanged(async (user) => {
+            if (user) {
+                currentUser = user;
+                loginBtn.style.display = 'none';
+                loginSpinner.style.display = 'flex';
+                await handleUserLogin(user);
+            } else {
+                 currentUser = null;
+                 currentUserData = null;
+                 // Hentikan semua listener realtime saat logout
+                 listeners.forEach(unsub => unsub());
+                 listeners = [];
+                 if (currentChatListener) { currentChatListener(); currentChatListener = null; }
+                 if (currentQuizQuestionsListener) { currentQuizQuestionsListener(); currentQuizQuestionsListener = null; }
+                 if (currentLobbyPlayersListener) { currentLobbyPlayersListener(); currentLobbyPlayersListener = null; }
+                 if (currentLobbyStateListener) { currentLobbyStateListener(); currentLobbyStateListener = null; }
+                 if (currentAnswerListener) { currentAnswerListener(); currentAnswerListener = null; }
+                 if (questionTimerInterval) { clearInterval(questionTimerInterval); questionTimerInterval = null; }
+                    
+                 showPage('login-page');
+                 loginBtn.style.display = 'inline-flex';
+                 loginSpinner.style.display = 'none';
+            }
+        });
+        
+        loginBtn.addEventListener('click', () => {
+            loginBtn.style.display = 'none';
+            loginSpinner.style.display = 'flex';
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider).catch(error => {
+                console.error("Login error:", error); alert("Gagal masuk. Silakan coba lagi.");
+                showPage('login-page'); loginBtn.style.display = 'inline-flex'; loginSpinner.style.display = 'none';
+            });
+        });
+
+        async function handleUserLogin(user) {
+            const userRef = db.collection('users').doc(user.uid);
+            const userDoc = await userRef.get();
+            if (user.email.toLowerCase() === TEACHER_EMAIL.toLowerCase()) {
+                if (!userDoc.exists) {
+                    await userRef.set({ name: user.displayName, email: user.email, role: 'teacher' }, { merge: true });
+                }
+                currentUserData = (await userRef.get()).data();
+                initializeTeacherDashboard(user);
+            } else {
+                 if (!userDoc.exists) {
+                    await userRef.set({ name: user.displayName, email: user.email, role: 'student', classId: null, className: null }, { merge: true });
+                }
+                currentUserData = (await userRef.get()).data();
+                initializeStudentDashboard(user, currentUserData);
+            }
+        }
+        
+        function setupLogout(buttonId) {
+             document.getElementById(buttonId).addEventListener('click', () => {
+                 if (confirm('Apakah Anda yakin ingin keluar?')) { auth.signOut(); }
+             });
+        }
+        
+        // --- Helper Functions ---
+        function generateClassCode() {
+            let code = '';
+            const chars = 'ABCDEFGHIJKLMNPQRSTUVWXYZ123456789';
+            for (let i = 0; i < 6; i++) { code += chars.charAt(Math.floor(Math.random() * chars.length)); }
+            return code;
+        }
+        function generateQuizPIN() {
+            return Math.floor(100000 + Math.random() * 900000).toString();
+        }
+        function formatReadableDate(dateObj) {
+            return dateObj.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+        }
+        function formatChatTimestamp(dateObj) {
+            return dateObj.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+        }
+        function scrollToChatBottom(element) {
+            if(element) { setTimeout(() => { element.scrollTop = element.scrollHeight; }, 0); }
+        }
+        
+        // =================================================================
+        // == TEACHER DASHBOARD LOGIC (v8.0)
+        // =================================================================
+        
+        function initializeTeacherDashboard(user) {
+            setupLogout('teacher-logout-btn');
+            
+            // Setup Tombol Navigasi Sub-Halaman
+            document.getElementById('go-to-create-task-btn').onclick = () => showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-task-page');
+            document.getElementById('go-to-announcements-btn').onclick = () => showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-announcement-page');
+            document.getElementById('go-to-materials-btn').onclick = () => showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-material-page');
+            document.getElementById('go-to-attendance-btn').onclick = () => showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-attendance-page');
+            document.getElementById('go-to-chat-btn-teacher').onclick = () => showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-chat-page');
+            document.getElementById('go-to-quiz-btn').onclick = () => showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-quiz-page');
+
+            // Setup Tombol Aksi
+            document.getElementById('create-class-btn').onclick = createClass;
+            document.getElementById('create-task-btn').onclick = createAssignment;
+            document.getElementById('publish-announcement-btn').onclick = publishAnnouncement;
+            document.getElementById('upload-material-btn').onclick = initPicker;
+            document.getElementById('view-attendance-btn').onclick = viewAttendance;
+            document.getElementById('create-quiz-btn').onclick = createQuiz;
+            
+            // v5.0: Setup Aksi Chat
+            document.getElementById('chat-class-select-teacher').addEventListener('change', loadTeacherChat);
+            document.getElementById('send-chat-btn-teacher').onclick = sendChatMessageTeacher;
+            document.getElementById('chat-input-teacher').addEventListener('keypress', e => { if (e.key === 'Enter') sendChatMessageTeacher(); });
+            
+            // v8.0: Setup Aksi Kuis Game
+            document.getElementById('start-quiz-game-btn').onclick = startQuizGame;
+            
+            // Muat data awal
+            loadTeacherData();
+            setupDeleteListeners(); 
+            
+            showPage('teacher-dashboard-page');
+            showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-main-menu');
+            document.getElementById('attendance-recap-date').valueAsDate = new Date();
+        }
+
+        function loadTeacherData() {
+            listeners.forEach(unsub => unsub());
+            listeners = [];
+            
+            const classListEl = document.getElementById('class-code-list');
+            let classListener = db.collection('classes').where('teacherId', '==', currentUser.uid)
+                .onSnapshot(snapshot => {
+                    if (snapshot.empty) { classListEl.innerHTML = '<p style_="text-align:center;">Belum ada kelas.</p>'; return; }
+                    let listHtml = '';
+                    let selectHtml = '<option value="">-- Pilih Kelas --</option>';
+                    let selectHtmlAll = '<option value="">-- Pilih Kelas --</option>';
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        listHtml += `<div class="list-item-teacher"><span>${data.name} <br> <strong class="code">${data.code}</strong></span><button class="delete-btn" data-id="${doc.id}" data-collection="classes">Hapus</button></div>`;
+                        selectHtml += `<option value="${doc.id}">${data.name}</option>`;
+                        selectHtmlAll += `<option value="${doc.id}">${data.name}</option>`;
+                    });
+                    selectHtmlAll += '<option value="SEMUA KELAS">SEMUA KELAS</option>';
+                    classListEl.innerHTML = listHtml;
+                    document.getElementById('task-class-target').innerHTML = selectHtml;
+                    document.getElementById('attendance-recap-class').innerHTML = selectHtml;
+                    document.getElementById('chat-class-select-teacher').innerHTML = selectHtml;
+                    document.getElementById('quiz-class-target-select').innerHTML = selectHtml;
+                    document.getElementById('announcement-class-target').innerHTML = selectHtmlAll;
+                    document.getElementById('material-class-target').innerHTML = selectHtmlAll;
+                }, error => { console.error("Error load classes:", error); classListEl.innerHTML = '<p class="error">Gagal memuat kelas.</p>'; });
+            listeners.push(classListener);
+
+            // Muat Daftar Tugas
+            const taskListEl = document.getElementById('teacher-assignment-list');
+            let taskListener = db.collection('assignments').where('teacherId', '==', currentUser.uid).orderBy('deadline', 'desc')
+                .onSnapshot(snapshot => {
+                    if (snapshot.empty) { taskListEl.innerHTML = '<p style="text-align:center;">Belum ada tugas.</p>'; return; }
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const data = doc.data(); const deadline = formatReadableDate(data.deadline.toDate());
+                        html += `<div class="content-item" style="cursor: pointer;" data-id="${doc.id}" data-title="${data.title}"><strong>${data.title}</strong><small>Tenggat: ${deadline}</small></div>`;
+                    });
+                    taskListEl.innerHTML = html;
+                    taskListEl.querySelectorAll('.content-item').forEach(item => { item.addEventListener('click', () => { viewSubmissions(item.dataset.id, item.dataset.title); }); });
+                }, error => { console.error("Error load assignments:", error); taskListEl.innerHTML = '<p class="error">Gagal memuat tugas.</p>'; });
+            listeners.push(taskListener);
+            
+            loadTeacherAnnouncements();
+            loadTeacherMaterials();
+            loadTeacherQuizzes();
+        }
+
+        // --- (Fungsi v4.1 - Tidak berubah) ---
+        async function createClass() {
+            const className = document.getElementById('class-name-input').value.trim();
+            if (!className) { alert("Nama kelas tidak boleh kosong."); return; }
+            const newCode = generateClassCode();
+            try {
+                const check = await db.collection('classes').where('code', '==', newCode).get();
+                if (!check.empty) { return createClass(); }
+                await db.collection('classes').add({ name: className, code: newCode, teacherId: currentUser.uid, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+                alert(`Kelas "${className}" berhasil dibuat dengan kode: ${newCode}`);
+                document.getElementById('class-name-input').value = '';
+            } catch (error) { console.error("Error creating class: ", error); alert("Gagal membuat kelas."); }
+        }
+        async function createAssignment() {
+            const title = document.getElementById('task-title').value.trim();
+            const desc = document.getElementById('task-desc').value.trim();
+            const deadline = document.getElementById('task-deadline').value;
+            const classId = document.getElementById('task-class-target').value;
+            if (!title || !desc || !deadline || !classId) { alert("Harap isi semua kolom tugas."); return; }
+            try {
+                await db.collection('assignments').add({ title: title, description: desc, deadline: new Date(deadline), classId: classId, teacherId: currentUser.uid, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+                alert("Slot tugas berhasil dipublikasikan!");
+                document.getElementById('task-title').value = ''; document.getElementById('task-desc').value = ''; document.getElementById('task-deadline').value = ''; document.getElementById('task-class-target').value = '';
+                showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-main-menu');
+            } catch (error) { console.error("Error creating assignment: ", error); alert("Gagal mempublikasikan tugas."); }
+        }
+        function viewSubmissions(assignmentId, assignmentTitle) {
+            const div = document.getElementById('teacher-view-submissions-div');
+            const listEl = document.getElementById('submission-list-container');
+            div.style.display = 'block';
+            document.getElementById('submission-list-title').textContent = `Rekap Pengumpulan: ${assignmentTitle}`;
+            listEl.innerHTML = '<div class="spinner-container"><div class="spinner"></div></div>';
+            showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-task-page');
+            let subListener = db.collection('assignments').doc(assignmentId).collection('submissions').orderBy('timestamp', 'desc')
+                .onSnapshot(snapshot => {
+                    if (snapshot.empty) { listEl.innerHTML = '<p style="text-align:center;">Belum ada siswa yang mengumpulkan.</p>'; return; }
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const data = doc.data(); const date = formatReadableDate(data.timestamp.toDate());
+                        html += `<div class="content-item"><strong>${data.studentName}</strong><p><a href="${data.link}" target="_blank" rel="noopener noreferrer">Buka Link Google Drive</a></p><small>Mengumpulkan pada: ${date}</small></div>`;
+                    });
+                    listEl.innerHTML = html;
+                }, error => { console.error("Error loading submissions: ", error); listEl.innerHTML = '<p class="error">Gagal memuat rekap.</p>'; });
+            listeners.push(subListener);
+        }
+        async function publishAnnouncement() {
+            const title = document.getElementById('announcement-title').value.trim();
+            const content = document.getElementById('announcement-content').value.trim();
+            const classId = document.getElementById('announcement-class-target').value;
+            if (!title || !content || !classId) { alert('Harap isi semua kolom.'); return; }
+            try {
+                await db.collection('announcements').add({ title, content, classId, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+                alert('Pengumuman berhasil dipublikasikan!');
+                document.getElementById('announcement-title').value = ''; document.getElementById('announcement-content').value = '';
+            } catch (error) { console.error("Error publishing: ", error); alert('Gagal mempublikasikan.'); }
+        }
+        function loadTeacherAnnouncements() {
+            const listElement = document.getElementById('teacher-announcement-list');
+            let listener = db.collection('announcements').orderBy('createdAt', 'desc').limit(10)
+                .onSnapshot(snapshot => {
+                    if (snapshot.empty) { listElement.innerHTML = '<p style="text-align:center;">Belum ada pengumuman.</p>'; return; }
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        html += `<div class="list-item-teacher"><span><strong>${doc.data().title}</strong> (${doc.data().classId})</span><button class="delete-btn" data-id="${doc.id}" data-collection="announcements">Hapus</button></div>`;
+                    });
+                    listElement.innerHTML = html;
+                }, error => { listElement.innerHTML = '<p class="error">Gagal memuat pengumuman.</p>'; });
+            listeners.push(listener);
+        }
+        function loadTeacherMaterials() {
+            const listElement = document.getElementById('teacher-material-list');
+            let listener = db.collection('materials').orderBy('createdAt', 'desc').limit(10)
+                .onSnapshot(snapshot => {
+                    if (snapshot.empty) { listElement.innerHTML = '<p style="text-align:center;">Belum ada materi.</p>'; return; }
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        html += `<div class="list-item-teacher"><span style="margin-right: 10px;">${doc.data().name} (${doc.data().classId})</span><button class="delete-btn" data-id="${doc.id}" data-collection="materials">Hapus</button></div>`;
+                    });
+                    listElement.innerHTML = html;
+                }, error => { listElement.innerHTML = '<p class="error">Gagal memuat materi.</p>'; });
+            listeners.push(listener);
+        }
+        function setupDeleteListeners() {
+            const appContainer = document.getElementById('app-container');
+            appContainer.addEventListener('click', async (e) => {
+                if (e.target && e.target.classList.contains('delete-btn')) {
+                    const id = e.target.dataset.id;
+                    const collection = e.target.dataset.collection;
+                    if (!id || !collection) return;
+                    let confirmMsg = 'Anda yakin ingin menghapus item ini?';
+                    if (collection === 'quizzes') { confirmMsg = 'Anda yakin ingin menghapus kuis ini? SEMUA pertanyaan di dalamnya juga akan terhapus. Hati-hati!'; }
+                    if (confirm(confirmMsg)) {
+                        try {
+                            await db.collection(collection).doc(id).delete();
+                            alert('Item berhasil dihapus.');
+                        } catch (error) { console.error("Error deleting: ", error); alert('Gagal menghapus item.'); }
+                    }
+                }
+            });
+        }
+        async function viewAttendance() {
+            const date = document.getElementById('attendance-recap-date').value;
+            const classId = document.getElementById('attendance-recap-class').value;
+            const listElement = document.getElementById('attendance-recap-list');
+            if (!date || !classId) { alert("Harap pilih tanggal dan kelas."); return; }
+            listElement.innerHTML = '<div class="spinner-container"><div class="spinner"></div></div>';
+            try {
+                const snapshot = await db.collection('attendance').doc(date).collection('submissions').where('classId', '==', classId).orderBy('nomorAbsen', 'asc').get();
+                if (snapshot.empty) { listElement.innerHTML = '<p style="text-align:center;">Tidak ada data absensi.</p>'; return; }
+                let html = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data(); const time = data.timestamp.toDate().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
+                    html += `<div class="content-item"><strong>${data.nomorAbsen}. ${data.nama}</strong> <small>(Absen: ${time})</small></div>`;
+                });
+                listElement.innerHTML = html;
+            } catch (error) { console.error("Error di rekap absensi:", error); listElement.innerHTML = '<p class="error">Gagal mengambil data.</p>'; }
+        }
+        // --- (Fungsi Google Drive v4.1 - Tidak berubah) ---
+        let tokenClient;
+        function initPicker() {
+            const classId = document.getElementById('material-class-target').value;
+            if (!classId) { alert("Harap pilih kelas tujuan."); return; }
+            gapi.load('client:picker', () => gisLoaded(classId));
+        }
+        function gisLoaded(classId) {
+            tokenClient = google.accounts.oauth2.initTokenClient({
+                client_id: GOOGLE_CLIENT_ID, scope: 'https://www.googleapis.com/auth/drive.readonly',
+                callback: (tokenResponse) => { if (tokenResponse.error) { throw(tokenResponse); } initializePicker(tokenResponse.access_token, classId); },
+            });
+            tokenClient.requestAccessToken({prompt: 'consent'});
+        }
+        async function initializePicker(accessToken, classId) {
+            await gapi.client.init({ apiKey: GOOGLE_API_KEY });
+            gapi.client.setToken({ access_token: accessToken });
+            document.getElementById('upload-status').innerText = 'Membuka pemilih file...';
+            createPicker(accessToken, classId);
+        }
+        function createPicker(token, classId) {
+            const view = new google.picker.View(google.picker.ViewId.DOCS);
+            view.setMimeTypes("application/pdf,application/vnd.google-apps.presentation,application/vnd.google-apps.document");
+            const picker = new google.picker.PickerBuilder()
+                .enableFeature(google.picker.Feature.NAV_HIDDEN).setAppId(APP_ID).setOAuthToken(token).addView(view)
+                .addView(new google.picker.DocsUploadView()).setDeveloperKey(GOOGLE_API_KEY)
+                .setCallback((data) => pickerCallback(data, classId)).build();
+            picker.setVisible(true);
+        }
+        async function pickerCallback(data, classId) {
+            if (data.action === google.picker.Action.PICKED) {
+                const doc = data.docs[0];
+                document.getElementById('upload-status').innerText = `Menyimpan "${doc.name}"...`;
+                try {
+                    await db.collection('materials').add({ name: doc.name, url: doc.url || doc.embedUrl, iconUrl: doc.iconUrl, classId: classId, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+                    alert(`Materi "${doc.name}" berhasil dipublikasikan!`);
+                } catch (error) { console.error("Error saving material:", error); alert("Gagal menyimpan materi.");
+                } finally { document.getElementById('upload-status').innerText = ''; }
+            } else if (data.action === google.picker.Action.CANCEL) { document.getElementById('upload-status').innerText = ''; }
+        }
+        
+        // --- (Fungsi Chat v5.0 - Tidak berubah) ---
+        function loadTeacherChat() {
+            const classId = document.getElementById('chat-class-select-teacher').value;
+            const messagesArea = document.getElementById('chat-messages-teacher');
+            const chatInput = document.getElementById('chat-input-teacher');
+            const sendBtn = document.getElementById('send-chat-btn-teacher');
+            if (currentChatListener) { currentChatListener(); currentChatListener = null; }
+            if (!classId) { messagesArea.innerHTML = '<p style="text-align: center; padding: 20px; color: #999;">Pilih kelas untuk memulai chat.</p>'; chatInput.disabled = true; sendBtn.disabled = true; return; }
+            chatInput.disabled = false; sendBtn.disabled = false;
+            messagesArea.innerHTML = '<div class="spinner-container"><div class="spinner"></div></div>';
+            const chatQuery = db.collection('chats').where('classId', '==', classId).orderBy('timestamp').limitToLast(50);
+            currentChatListener = chatQuery.onSnapshot(snapshot => { renderChatMessages(snapshot, messagesArea, currentUser.uid); scrollToChatBottom(messagesArea);
+            }, error => { console.error("Error loading chat: ", error); messagesArea.innerHTML = '<p class="error">Gagal memuat chat.</p>'; });
+        }
+        async function sendChatMessageTeacher() {
+            const text = document.getElementById('chat-input-teacher').value.trim();
+            const classId = document.getElementById('chat-class-select-teacher').value;
+            if (!text || !classId) return;
+            document.getElementById('chat-input-teacher').value = '';
+            try {
+                await db.collection('chats').add({ classId: classId, senderId: currentUser.uid, senderName: "Mam Yanti", text: text, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+            } catch (error) { console.error("Error sending message: ", error); alert("Gagal mengirim pesan."); document.getElementById('chat-input-teacher').value = text; }
+        }
+        
+        // --- (Fungsi Kuis v6.0 - Bank Soal) ---
+        function loadTeacherQuizzes() {
+            const listElement = document.getElementById('quiz-list-container');
+            let listener = db.collection('quizzes').where('teacherId', '==', currentUser.uid).orderBy('createdAt', 'desc')
+                .onSnapshot(snapshot => {
+                    if (snapshot.empty) { listElement.innerHTML = '<p style="text-align:center;">Belum ada kuis di bank soal Anda.</p>'; return; }
+                    let html = '';
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        html += `<div class="list-item-teacher">
+                                    <span classs="quiz-item-title-container">
+                                        <strong class="quiz-item-title" data-id="${doc.id}" data-title="${data.title}">${data.title}</strong>
+                                        <p style="font-size: 0.85em; color: #777;">${data.description || 'Tanpa deskripsi'}</p>
+                                    </span>
+                                    <div class="quiz-item-actions">
+                                        <button class="start-session-btn" onclick="startQuizSession('${doc.id}', '${data.title}')"><i class="fa-solid fa-play"></i> Mulai Sesi</button>
+                                        <button class="delete-btn" data-id="${doc.id}" data-collection="quizzes">Hapus</button>
+                                    </div>
+                                </div>`;
+                    });
+                    listElement.innerHTML = html;
+                    listElement.querySelectorAll('.quiz-item-title').forEach(item => {
+                        item.addEventListener('click', () => { showQuizDetailPage(item.dataset.id, item.dataset.title); });
+                    });
+                }, error => { console.error("Error loading quizzes:", error); listElement.innerHTML = '<p class="error">Gagal memuat daftar kuis.</p>'; });
+            listeners.push(listener);
+        }
+        async function createQuiz() {
+            const title = document.getElementById('quiz-title').value.trim();
+            const description = document.getElementById('quiz-description').value.trim();
+            if (!title) { alert('Judul kuis tidak boleh kosong.'); return; }
+            try {
+                await db.collection('quizzes').add({ title: title, description: description, teacherId: currentUser.uid, createdAt: firebase.firestore.FieldValue.serverTimestamp() });
+                alert('Kuis berhasil dibuat!');
+                document.getElementById('quiz-title').value = ''; document.getElementById('quiz-description').value = '';
+            } catch (error) { console.error("Error creating quiz:", error); alert('Gagal membuat kuis.'); }
+        }
+        function showQuizDetailPage(quizId, quizTitle) {
+            document.getElementById('quiz-detail-title').textContent = quizTitle;
+            document.getElementById('add-question-btn').onclick = () => addQuestion(quizId);
+            showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-quiz-detail-page');
+            loadQuizQuestions(quizId);
+        }
+        function loadQuizQuestions(quizId) {
+            const listElement = document.getElementById('question-list-container');
+            listElement.innerHTML = '<div class="spinner-container"><div class="spinner"></div></div>';
+            if (currentQuizQuestionsListener) { currentQuizQuestionsListener(); }
+            const query = db.collection('quizzes').doc(quizId).collection('questions');
+            currentQuizQuestionsListener = query.onSnapshot(snapshot => {
+                if (snapshot.empty) { listElement.innerHTML = '<p style="text-align:center;">Belum ada pertanyaan di kuis ini.</p>'; return; }
+                let html = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    html += `
+                        <div class="question-item">
+                            <strong>${data.questionText}</strong>
+                            <ul class="options-list">
+                                <li class="${data.correctAnswerIndex == 0 ? 'correct' : ''}">A: ${data.options[0] || ''}</li>
+                                <li class="${data.correctAnswerIndex == 1 ? 'correct' : ''}">B: ${data.options[1] || ''}</li>
+                                <li class="${data.correctAnswerIndex == 2 ? 'correct' : ''}">C: ${data.options[2] || ''}</li>
+                                <li class="${data.correctAnswerIndex == 3 ? 'correct' : ''}">D: ${data.options[3] || ''}</li>
+                            </ul>
+                            <button class="delete-btn" data-id="${doc.id}" data-collection="quizzes/${quizId}/questions">Hapus</button>
+                            <div style="clear:both;"></div>
+                        </div>`;
+                });
+                listElement.innerHTML = html;
+            }, error => { console.error("Error loading questions:", error); listElement.innerHTML = '<p class="error">Gagal memuat pertanyaan.</p>'; });
+        }
+        async function addQuestion(quizId) {
+            const questionText = document.getElementById('question-text').value.trim();
+            const opt0 = document.getElementById('option-0').value.trim(); const opt1 = document.getElementById('option-1').value.trim();
+            const opt2 = document.getElementById('option-2').value.trim(); const opt3 = document.getElementById('option-3').value.trim();
+            const correctAnswerIndex = parseInt(document.getElementById('correct-answer-select').value);
+            if (!questionText || !opt0 || !opt1 || !opt2 || !opt3) { alert('Semua kolom (pertanyaan dan 4 opsi) harus diisi.'); return; }
+            const options = [opt0, opt1, opt2, opt3];
+            try {
+                await db.collection('quizzes').doc(quizId).collection('questions').add({ questionText: questionText, options: options, correctAnswerIndex: correctAnswerIndex });
+                document.getElementById('question-text').value = ''; document.getElementById('option-0').value = '';
+                document.getElementById('option-1').value = ''; document.getElementById('option-2').value = '';
+                document.getElementById('option-3').value = ''; document.getElementById('correct-answer-select').value = '0';
+            } catch (error) { console.error("Error adding question:", error); alert('Gagal menambahkan pertanyaan.'); }
+        }
+        
+        // v7.0: Tambahkan onclick ke global window
+        window.startQuizSession = startQuizSession; 
+
+        // --- (Fungsi Lobi v7.0) ---
+        async function startQuizSession(quizId, quizTitle) {
+            const classSelect = document.getElementById('quiz-class-target-select');
+            const classId = classSelect.value;
+            const className = classSelect.options[classSelect.selectedIndex].text;
+            if (!classId) { alert("Harap pilih kelas target sesi terlebih dahulu!"); return; }
+            if (!confirm(`Anda akan memulai sesi kuis "${quizTitle}" untuk kelas ${className}. Lanjutkan?`)) { return; }
+            const pin = generateQuizPIN();
+            try {
+                const sessionRef = await db.collection('quizSessions').add({
+                    quizId: quizId, quizTitle: quizTitle, teacherId: currentUser.uid,
+                    classId: classId, className: className, pin: pin,
+                    status: 'lobby', createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                showTeacherQuizLobby(sessionRef.id, quizTitle, pin, className);
+            } catch (error) { console.error("Error starting quiz session:", error); alert("Gagal memulai sesi kuis. Coba lagi."); }
+        }
+        function showTeacherQuizLobby(sessionId, quizTitle, pin, className) {
+            currentQuizSessionId = sessionId;
+            document.getElementById('lobby-quiz-title-teacher').textContent = quizTitle;
+            document.getElementById('lobby-pin-display').textContent = pin;
+            document.getElementById('lobby-class-target-teacher').textContent = className;
+            showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-quiz-lobby-page');
+            const playerListElement = document.getElementById('lobby-player-list-teacher');
+            const playerCountElement = document.getElementById('lobby-player-count-teacher');
+            if (currentLobbyPlayersListener) { currentLobbyPlayersListener(); }
+            const query = db.collection('quizSessions').doc(sessionId).collection('players');
+            currentLobbyPlayersListener = query.onSnapshot(snapshot => {
+                renderLobbyPlayers(snapshot, playerListElement, playerCountElement);
+            }, error => { console.error("Error listening to players:", error); playerListElement.innerHTML = '<p class="error">Gagal memuat daftar siswa.</p>'; });
+        }
+        function renderLobbyPlayers(snapshot, listElement, countElement) {
+            countElement.textContent = snapshot.size;
+            if (snapshot.empty) { listElement.innerHTML = '<p style="text-align:center; grid-column: 1 / -1; color: #999;">Menunggu siswa bergabung...</p>'; return; }
+            let html = '';
+            snapshot.forEach(doc => { html += `<div class="lobby-player-item">${doc.data().studentName}</div>`; });
+            listElement.innerHTML = html;
+        }
+
+        // =================================================================
+        // == v8.0: LOGIKA GAME KUIS (GURU)
+        // =================================================================
+        
+        async function startQuizGame() {
+            if (!currentQuizSessionId) { alert("Error: Sesi ID tidak ditemukan."); return; }
+            
+            const btn = document.getElementById('start-quiz-game-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Memulai...';
+            
+            try {
+                const sessionRef = db.collection('quizSessions').doc(currentQuizSessionId);
+                const sessionDoc = await sessionRef.get();
+                const sessionData = sessionDoc.data();
+                
+                // 1. Ambil (fetch) semua pertanyaan dari "Bank Soal"
+                const questionsSnapshot = await db.collection('quizzes').doc(sessionData.quizId).collection('questions').get();
+                
+                if (questionsSnapshot.empty) {
+                    alert("Error: Kuis ini tidak memiliki pertanyaan! Tambahkan pertanyaan di Bank Soal.");
+                    btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Mulai Kuis!';
+                    return;
+                }
+                
+                // 2. Format pertanyaan menjadi array untuk disimpan di sesi
+                const questionsArray = [];
+                questionsSnapshot.forEach(doc => {
+                    questionsArray.push(doc.data());
+                });
+                
+                // 3. Update dokumen sesi untuk memulai kuis
+                await sessionRef.update({
+                    status: "in-progress",
+                    currentQuestionIndex: 0,
+                    questionCount: questionsArray.length,
+                    questions: questionsArray // Simpan salinan pertanyaan ke sesi
+                });
+                
+                // 4. Pindah ke halaman game guru (sudah di-handle listener di v9/v10)
+                // Untuk v8, kita panggil manual
+                showTeacherGamePage(sessionData.quizTitle, questionsArray, 0);
+
+            } catch (error) {
+                console.error("Error starting game:", error);
+                alert("Gagal memulai kuis.");
+                btn.disabled = false; btn.innerHTML = '<i class="fa-solid fa-rocket"></i> Mulai Kuis!';
+            }
+        }
+        
+        function showTeacherGamePage(quizTitle, questions, index) {
+            showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-quiz-game-page');
+            
+            const currentQuestion = questions[index];
+            
+            // Tampilkan info pertanyaan
+            document.getElementById('teacher-question-number').textContent = `Pertanyaan ${index + 1} / ${questions.length}`;
+            document.getElementById('teacher-quiz-title').textContent = quizTitle;
+            document.getElementById('teacher-question-text').textContent = currentQuestion.questionText;
+            document.getElementById('teacher-option-0').textContent = currentQuestion.options[0];
+            document.getElementById('teacher-option-1').textContent = currentQuestion.options[1];
+            document.getElementById('teacher-option-2').textContent = currentQuestion.options[2];
+            document.getElementById('teacher-option-3').textContent = currentQuestion.options[3];
+            
+            // Setup listener untuk jumlah jawaban
+            const answerCountEl = document.getElementById('teacher-answer-count');
+            if (currentAnswerListener) { currentAnswerListener(); }
+            
+            const query = db.collection('quizSessions').doc(currentQuizSessionId).collection('currentAnswers');
+            currentAnswerListener = query.onSnapshot(snapshot => {
+                answerCountEl.textContent = snapshot.size;
+            });
+        }
+        
+
+        // =================================================================
+        // == STUDENT DASHBOARD LOGIC (v8.0)
+        // =================================================================
+        
+        function initializeStudentDashboard(user, userData) {
+            document.getElementById('student-welcome').textContent = `Hai, ${user.displayName.split(' ')[0]}!`;
+            setupLogout('student-logout-btn');
+            const joinClassDiv = document.getElementById('student-join-class');
+            const mainContentDiv = document.getElementById('student-main-content');
+            
+            if (!userData.classId) {
+                joinClassDiv.style.display = 'block'; mainContentDiv.style.display = 'none';
+            } else {
+                joinClassDiv.style.display = 'none'; mainContentDiv.style.display = 'block';
+                loadStudentContent(userData.classId);
+                checkStudentAttendance(); 
+            }
+            document.getElementById('join-class-btn').onclick = joinClass;
+            document.getElementById('submit-attendance-btn').onclick = submitAttendance;
+            document.getElementById('go-to-chat-btn-student').onclick = loadStudentChat;
+            document.getElementById('send-chat-btn-student').onclick = sendChatMessageStudent;
+            document.getElementById('chat-input-student').addEventListener('keypress', e => { if (e.key === 'Enter') sendChatMessageStudent(); });
+            
+            // v7.0: Setup Aksi Kuis Siswa
+            document.getElementById('go-to-quiz-join-btn-student').onclick = () => showSubPage(document.getElementById('student-dashboard-page'), 'student-quiz-join-page');
+            document.getElementById('join-quiz-btn').onclick = joinQuizSession;
+            
+            // v8.0: Setup listener tombol jawaban
+            document.querySelectorAll('.answer-btn').forEach(btn => {
+                btn.addEventListener('click', () => submitQuizAnswer(btn.dataset.index));
+            });
+
+            showPage('student-dashboard-page');
+            showSubPage(document.getElementById('student-dashboard-page'), 'student-main-menu');
+        }
+        
+        // --- (Fungsi v4.1 - Tidak berubah) ---
+        async function joinClass() {
+            const code = document.getElementById('class-code-input').value.trim().toUpperCase();
+            if (!code) { alert("Kode kelas tidak boleh kosong."); return; }
+            try {
+                const classQuery = await db.collection('classes').where('code', '==', code).limit(1).get();
+                if (classQuery.empty) { alert("Kode kelas tidak ditemukan. Periksa kembali kode Anda."); return; }
+                const classDoc = classQuery.docs[0]; const classId = classDoc.id; const className = classDoc.data().name;
+                await db.collection('users').doc(currentUser.uid).update({ classId: classId, className: className });
+                alert(`Anda berhasil bergabung dengan kelas ${className}!`);
+                currentUserData.classId = classId; currentUserData.className = className;
+                initializeStudentDashboard(currentUser, currentUserData);
+            } catch (error) { console.error("Error joining class: ", error); alert("Gagal bergabung dengan kelas."); }
+        }
+        function getTodayDateString() { return new Date().toISOString().slice(0, 10); }
+        async function checkStudentAttendance() {
+            const dateStr = getTodayDateString();
+            const attendanceStatusEl = document.getElementById('attendance-status');
+            const attendanceInputEl = document.getElementById('attendance-input');
+            const attendanceBtnEl = document.getElementById('submit-attendance-btn');
+            try {
+                const doc = await db.collection('attendance').doc(dateStr).collection('submissions').doc(currentUser.uid).get();
+                if (doc.exists) {
+                    attendanceStatusEl.textContent = `Anda sudah absen hari ini (No. ${doc.data().nomorAbsen}).`;
+                    attendanceStatusEl.style.color = 'green';
+                    attendanceInputEl.disabled = true; attendanceBtnEl.disabled = true;
+                    attendanceInputEl.value = doc.data().nomorAbsen;
+                } else {
+                    attendanceStatusEl.textContent = 'Anda BELUM absensi hari ini.';
+                    attendanceStatusEl.style.color = 'var(--danger-color)';
+                    attendanceInputEl.disabled = false; attendanceBtnEl.disabled = false;
+                }
+            } catch (error) { attendanceStatusEl.textContent = "Gagal memuat status absensi."; attendanceStatusEl.style.color = 'red'; }
+        }
+        async function submitAttendance() {
+            const nomorAbsen = document.getElementById('attendance-input').value.trim();
+            if (!nomorAbsen || isNaN(nomorAbsen) || nomorAbsen < 1 || nomorAbsen > 40) { alert(`Nomor absen tidak valid.`); return; }
+            const attendanceBtnEl = document.getElementById('submit-attendance-btn');
+            attendanceBtnEl.disabled = true; attendanceBtnEl.textContent = "Memproses...";
+            try {
+                const dateStr = getTodayDateString();
+                const attendanceRef = db.collection('attendance').doc(dateStr).collection('submissions').doc(currentUser.uid);
+                await attendanceRef.set({ nomorAbsen: parseInt(nomorAbsen), classId: currentUserData.classId, nama: currentUser.displayName, userId: currentUser.uid, email: currentUser.email, timestamp: new Date() });
+                alert('Absensi berhasil dicatat!');
+                checkStudentAttendance();
+            } catch (error) { alert('Gagal mencatat absensi.'); attendanceBtnEl.disabled = false; attendanceBtnEl.textContent = "Kirim Absensi"; }
+        }
+        function loadStudentContent(classId) {
+            listeners.forEach(unsub => unsub());
+            listeners = [];
+            const announcementList = document.getElementById('announcement-list');
+            const materialList = document.getElementById('material-list');
+            const assignmentList = document.getElementById('assignment-list-student');
+            let annListener = db.collection('announcements').where('classId', 'in', [classId, 'SEMUA KELAS']).orderBy('createdAt', 'desc').limit(10)
+                .onSnapshot(snapshot => {
+                    if (snapshot.empty) { announcementList.innerHTML = '<p style="text-align:center;">Belum ada pengumuman.</p>'; return; }
+                    let html = '';
+                    snapshot.forEach(doc => { const data = doc.data(); const date = formatReadableDate(data.createdAt.toDate()); html += `<div class="content-item"><strong>${data.title}</strong><p>${data.content}</p><small>${date}</small></div>`; });
+                    announcementList.innerHTML = html;
+                }, error => { announcementList.innerHTML = '<p class="error">Gagal memuat pengumuman.</p>'; });
+            let matListener = db.collection('materials').where('classId', 'in', [classId, 'SEMUA KELAS']).orderBy('createdAt', 'desc').limit(10)
+                 .onSnapshot(snapshot => {
+                    if (snapshot.empty) { materialList.innerHTML = '<p style="text-align:center;">Belum ada materi belajar.</p>'; return; }
+                    let html = '';
+                    snapshot.forEach(doc => { const data = doc.data(); html += `<a href="${data.url}" target="_blank" rel="noopener noreferrer" style="text-decoration:none; color:inherit;"><div class="content-item" style="display:flex; align-items:center; gap:12px;"><img src="${data.iconUrl || 'https://www.gstatic.com/images/branding/product/1x/google_drive_32dp.png'}" alt="file" style="width:24px; height:24px;"><span style="font-weight: 500;">${data.name}</span></div></a>`; });
+                    materialList.innerHTML = html;
+                 }, error => { materialList.innerHTML = '<p class="error">Gagal memuat materi.</p>'; });
+            let assListener = db.collection('assignments').where('classId', '==', classId).orderBy('deadline', 'desc')
+                .onSnapshot(snapshot => {
+                    if (snapshot.empty) { assignmentList.innerHTML = '<p style="text-align:center;">Belum ada tugas.</p>'; return; }
+                    let html = '';
+                    snapshot.forEach(doc => { const data = doc.data(); const deadline = formatReadableDate(data.deadline.toDate()); html += `<div class="content-item" style="cursor: pointer;" data-id="${doc.id}"><strong>${data.title}</strong><small>Tenggat: ${deadline}</small></div>`; });
+                    assignmentList.innerHTML = html;
+                    assignmentList.querySelectorAll('.content-item').forEach(item => { item.addEventListener('click', () => { showTaskSubmissionPage(item.dataset.id); }); });
+                }, error => { assignmentList.innerHTML = '<p class="error">Gagal memuat tugas.</p>'; });
+            listeners.push(annListener, matListener, assListener);
+        }
+        async function showTaskSubmissionPage(assignmentId) {
+            const page = document.getElementById('student-dashboard-page');
+            showSubPage(page, 'student-task-page');
+            const titleEl = document.getElementById('task-detail-title'); const descEl = document.getElementById('task-detail-desc');
+            const deadlineEl = document.getElementById('task-detail-deadline'); const linkInput = document.getElementById('task-link-input');
+            const submitBtn = document.getElementById('submit-task-btn'); const statusEl = document.getElementById('task-submission-status');
+            titleEl.textContent = "Memuat..."; descEl.textContent = ""; deadlineEl.textContent = "";
+            linkInput.disabled = true; submitBtn.disabled = true; statusEl.textContent = "";
+            try {
+                const taskDoc = await db.collection('assignments').doc(assignmentId).get();
+                if (!taskDoc.exists) { throw new Error("Tugas tidak ditemukan."); }
+                const taskData = taskDoc.data();
+                titleEl.textContent = taskData.title; descEl.textContent = taskData.description; deadlineEl.textContent = `Tenggat: ${formatReadableDate(taskData.deadline.toDate())}`;
+                const submissionDoc = await db.collection('assignments').doc(assignmentId).collection('submissions').doc(currentUser.uid).get();
+                if (submissionDoc.exists) {
+                    statusEl.textContent = "Anda sudah mengumpulkan tugas ini."; statusEl.style.color = "green";
+                    linkInput.value = submissionDoc.data().link; linkInput.disabled = true;
+                    submitBtn.disabled = true; submitBtn.textContent = "Sudah Terkumpul";
+                } else {
+                    linkInput.disabled = false; submitBtn.disabled = false; submitBtn.textContent = "Kirim Tugas";
+                    submitBtn.onclick = () => submitTask(assignmentId);
+                }
+            } catch (error) { console.error("Error showing task page: ", error); titleEl.textContent = "Gagal memuat tugas."; }
+        }
+        async function submitTask(assignmentId) {
+            const link = document.getElementById('task-link-input').value.trim();
+            if (!link.startsWith('https://drive.google.com/')) { alert("Link tidak valid. Harap gunakan link Google Drive..."); return; }
+            const submitBtn = document.getElementById('submit-task-btn');
+            submitBtn.disabled = true; submitBtn.textContent = "Mengirim...";
+            try {
+                await db.collection('assignments').doc(assignmentId).collection('submissions').doc(currentUser.uid)
+                    .set({ link: link, studentId: currentUser.uid, studentName: currentUser.displayName, classId: currentUserData.classId, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+                alert("Tugas berhasil dikumpulkan!");
+                showSubPage(document.getElementById('student-dashboard-page'), 'student-main-menu');
+            } catch (error) { console.error("Error submitting task: ", error); alert("Gagal mengirim tugas. Coba lagi."); submitBtn.disabled = false; submitBtn.textContent = "Kirim Tugas"; }
+        }
+        
+        // --- (Fungsi Chat v5.0 - Tidak berubah) ---
+        function loadStudentChat() {
+            showSubPage(document.getElementById('student-dashboard-page'), 'student-chat-page');
+            const classId = currentUserData.classId; const className = currentUserData.className;
+            document.getElementById('student-chat-title').textContent = `Chat Kelas: ${className}`;
+            const messagesArea = document.getElementById('chat-messages-student');
+            messagesArea.innerHTML = '<div class="spinner-container"><div class="spinner"></div></div>';
+            if (currentChatListener) { currentChatListener(); currentChatListener = null; }
+            const chatQuery = db.collection('chats').where('classId', '==', classId).orderBy('timestamp').limitToLast(50);
+            currentChatListener = chatQuery.onSnapshot(snapshot => { renderChatMessages(snapshot, messagesArea, currentUser.uid); scrollToChatBottom(messagesArea);
+            }, error => { console.error("Error loading chat: ", error); messagesArea.innerHTML = '<p class="error">Gagal memuat chat.</p>'; });
+        }
+        async function sendChatMessageStudent() {
+            const text = document.getElementById('chat-input-student').value.trim();
+            const classId = currentUserData.classId;
+            if (!text || !classId) return;
+            document.getElementById('chat-input-student').value = '';
+            try {
+                await db.collection('chats').add({ classId: classId, senderId: currentUser.uid, senderName: currentUser.displayName, text: text, timestamp: firebase.firestore.FieldValue.serverTimestamp() });
+            } catch (error) { console.error("Error sending message: ", error); alert("Gagal mengirim pesan."); document.getElementById('chat-input-student').value = text; }
+        }
+        function renderChatMessages(snapshot, messagesAreaElement, currentUserId) {
+            if (snapshot.empty) { messagesAreaElement.innerHTML = '<p style="text-align: center; padding: 20px; color: #999;">Belum ada pesan di kelas ini.</p>'; return; }
+            let html = '';
+            snapshot.forEach(doc => {
+                const data = doc.data(); if (!data.timestamp) return;
+                const isSelf = data.senderId === currentUserId; const messageClass = isSelf ? 'self' : 'other';
+                const senderName = isSelf ? 'Anda' : data.senderName; const time = formatChatTimestamp(data.timestamp.toDate());
+                html += `<div class="chat-message ${messageClass}"><div class="sender">${senderName}</div><div class="bubble">${data.text}</div><div class="timestamp">${time}</div></div>`;
+            });
+            messagesAreaElement.innerHTML = html;
+        }
+        
+        // --- (Fungsi Lobi Siswa v7.0) ---
+        async function joinQuizSession() {
+            const pin = document.getElementById('quiz-pin-input').value.trim();
+            if (pin.length !== 6) { alert("PIN Kuis harus 6 digit angka."); return; }
+            const btn = document.getElementById('join-quiz-btn');
+            btn.disabled = true; btn.textContent = "Mencari...";
+            try {
+                const query = await db.collection('quizSessions').where('pin', '==', pin).where('status', '==', 'lobby').limit(1).get();
+                if (query.empty) {
+                    alert("PIN tidak ditemukan atau kuis sudah dimulai.");
+                    btn.disabled = false; btn.textContent = "Gabung"; return;
+                }
+                const sessionDoc = query.docs[0];
+                const sessionData = sessionDoc.data();
+                if (sessionData.classId !== currentUserData.classId) {
+                    alert("PIN Kuis ini tidak ditujukan untuk kelas Anda.");
+                    btn.disabled = false; btn.textContent = "Gabung"; return;
+                }
+                await db.collection('quizSessions').doc(sessionDoc.id).collection('players').doc(currentUser.uid).set({ studentName: currentUser.displayName, score: 0 });
+                showStudentQuizLobby(sessionDoc.id, sessionData.quizTitle);
+            } catch (error) {
+                console.error("Error joining quiz session:", error);
+                alert("Gagal bergabung dengan sesi. Coba lagi.");
+                btn.disabled = false; btn.textContent = "Gabung";
+            }
+        }
+        function showStudentQuizLobby(sessionId, quizTitle) {
+            currentQuizSessionId = sessionId;
+            document.getElementById('lobby-quiz-title-student').textContent = quizTitle;
+            showSubPage(document.getElementById('student-dashboard-page'), 'student-quiz-lobby-page');
+            
+            const playerListElement = document.getElementById('lobby-player-list-student');
+            const playerCountElement = document.getElementById('lobby-player-count-student');
+            if (currentLobbyPlayersListener) { currentLobbyPlayersListener(); }
+            const playersQuery = db.collection('quizSessions').doc(sessionId).collection('players');
+            currentLobbyPlayersListener = playersQuery.onSnapshot(snapshot => {
+                renderLobbyPlayers(snapshot, playerListElement, playerCountElement);
+            }, error => { console.error("Error listening to players:", error); playerListElement.innerHTML = '<p class="error">Gagal memuat daftar siswa.</p>'; });
+
+            // v8.0: Listener status sesi DIUBAH
+            if (currentLobbyStateListener) { currentLobbyStateListener(); }
+            const sessionQuery = db.collection('quizSessions').doc(sessionId);
+            currentLobbyStateListener = sessionQuery.onSnapshot(doc => {
+                if (!doc.exists) {
+                    alert("Sesi kuis telah ditutup oleh guru.");
+                    showSubPage(document.getElementById('student-dashboard-page'), 'student-main-menu');
+                    return;
+                }
+                
+                const sessionData = doc.data();
+                if (sessionData.status === 'in-progress') {
+                    // KUIS DIMULAI! Pindah ke halaman game
+                    showStudentGamePage(sessionData);
+                } else if (sessionData.status === 'finished') {
+                    alert("Kuis telah selesai.");
+                    showSubPage(document.getElementById('student-dashboard-page'), 'student-main-menu');
+                }
+                // Jika status 'lobby', diam di tempat
+            }, error => {
+                console.error("Error listening to session state:", error);
+                alert("Koneksi ke sesi kuis terputus.");
+                showSubPage(document.getElementById('student-dashboard-page'), 'student-main-menu');
+            });
+        }
+        
+        // =================================================================
+        // == v8.0: LOGIKA GAME KUIS (SISWA)
+        // =================================================================
+
+        function showStudentGamePage(sessionData) {
+            // Hentikan listener lobi, kita sekarang di dalam game
+            if (currentLobbyPlayersListener) { currentLobbyPlayersListener(); currentLobbyPlayersListener = null; }
+            
+            showSubPage(document.getElementById('student-dashboard-page'), 'student-quiz-game-page');
+            
+            const index = sessionData.currentQuestionIndex;
+            const currentQuestion = sessionData.questions[index];
+            
+            // Tampilkan info pertanyaan
+            document.getElementById('student-question-number').textContent = `Pertanyaan ${index + 1} / ${sessionData.questionCount}`;
+            document.getElementById('student-quiz-title').textContent = sessionData.quizTitle;
+            document.getElementById('student-question-text').textContent = currentQuestion.questionText;
+            
+            // Tampilkan opsi jawaban di tombol
+            document.getElementById('answer-btn-0').textContent = currentQuestion.options[0];
+            document.getElementById('answer-btn-1').textContent = currentQuestion.options[1];
+            document.getElementById('answer-btn-2').textContent = currentQuestion.options[2];
+            document.getElementById('answer-btn-3').textContent = currentQuestion.options[3];
+            
+            // Reset tombol
+            document.querySelectorAll('.answer-btn').forEach(btn => {
+                btn.disabled = false;
+                btn.classList.remove('selected');
+            });
+            document.getElementById('student-quiz-footer').textContent = "Pilih jawabanmu!";
+            
+            // Mulai Timer
+            startQuestionTimer(20); // Timer 20 detik
+        }
+        
+        function startQuestionTimer(duration) {
+            if (questionTimerInterval) { clearInterval(questionTimerInterval); }
+            
+            let timeLeft = duration;
+            const timerElement = document.getElementById('student-question-timer');
+            timerElement.textContent = timeLeft;
+            
+            questionTimerInterval = setInterval(() => {
+                timeLeft--;
+                timerElement.textContent = timeLeft;
+                
+                if (timeLeft <= 0) {
+                    clearInterval(questionTimerInterval);
+                    timerElement.textContent = "0";
+                    lockStudentAnswers(true); // Kunci jawaban karena waktu habis
+                }
+            }, 1000);
+        }
+        
+        function lockStudentAnswers(isTimeUp) {
+            if (questionTimerInterval) { clearInterval(questionTimerInterval); }
+            
+            document.querySelectorAll('.answer-btn').forEach(btn => {
+                btn.disabled = true;
+            });
+            
+            const footer = document.getElementById('student-quiz-footer');
+            if (isTimeUp) {
+                footer.textContent = "Waktu Habis! ⌛";
+            } else {
+                footer.textContent = "Jawabanmu terkunci! 🔒 Menunggu siswa lain...";
+            }
+        }
+        
+        async function submitQuizAnswer(answerIndex) {
+            if (!currentQuizSessionId) { return; }
+            
+            const index = parseInt(answerIndex);
+            
+            // Kunci jawaban secara visual
+            lockStudentAnswers(false);
+            document.getElementById(`answer-btn-${index}`).classList.add('selected');
+
+            try {
+                // Kirim jawaban ke Firestore
+                const answerRef = db.collection('quizSessions').doc(currentQuizSessionId)
+                                    .collection('currentAnswers').doc(currentUser.uid);
+                
+                await answerRef.set({
+                    answerIndex: index,
+                    studentName: currentUser.displayName,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                
+            } catch (error) {
+                console.error("Error submitting answer:", error);
+                alert("Gagal mengirim jawaban. Coba lagi.");
+                // Buka kunci lagi jika gagal
+                document.querySelectorAll('.answer-btn').forEach(btn => {
+                    btn.disabled = false;
+                    btn.classList.remove('selected');
+                });
+                document.getElementById('student-quiz-footer').textContent = "Pilih jawabanmu!";
+            }
+        }
+        
+
+    </script>
+
+</body>
+</html>
