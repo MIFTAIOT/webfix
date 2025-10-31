@@ -11,15 +11,13 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        /* (CSS LENGKAP - Ada tambahan untuk UI baru v8.0) */
+        /* (CSS LENGKAP - v8.0) */
         :root {
             --primary-color: #4A90E2; --secondary-color: #50E3C2; --text-color: #4A4A4A;
             --danger-color: #E24A4A; --bg-color: #F7F9FC; --card-bg: #FFFFFF; --border-color: #EAEAEA;
             --warning-bg: #FFFBEB; --warning-border: #FDE68A;
             --chat-self-bg: #E1F5FE; --chat-other-bg: #F1F3F4;
             --success-color: #28a745; --success-bg: #EAF7EC;
-            
-            /* v8.0: Warna Jawaban */
             --answer-red: #E24A4A;
             --answer-blue: #4A90E2;
             --answer-green: #28a745;
@@ -152,65 +150,29 @@
         .quiz-item-actions { display: flex; flex-direction: column; gap: 8px; width: 100px; }
         .quiz-item-actions .start-session-btn { background: var(--secondary-color); color: #333; font-size: 0.8em; padding: 5px 10px; width: auto; }
 
-        /* ==================================== */
-        /* == CSS TAMBAHAN v8.0 (GAME KUIS) == */
-        /* ==================================== */
-        .quiz-game-page { /* Penampung halaman game agar header/footer bisa fixed */
-            display: flex; flex-direction: column; flex-grow: 1;
-        }
+        /* == CSS v8.0 (GAME KUIS) == */
+        .quiz-game-page { display: flex; flex-direction: column; flex-grow: 1; }
         .quiz-game-header { text-align: center; padding: 10px; }
         .quiz-game-header h2 { font-size: 1.2em; font-weight: 600; }
         .quiz-game-header p { font-size: 1em; color: #777; }
-        
-        .quiz-game-timer {
-            font-size: 2.5em; font-weight: 700; color: var(--primary-color);
-            text-align: center; margin: 15px 0;
-        }
-        
-        .quiz-question-text {
-            font-size: 1.2em; font-weight: 600; text-align: center;
-            line-height: 1.6; margin-bottom: 25px; padding: 15px;
-            background: var(--bg-color); border-radius: 10px;
-        }
-        
-        .quiz-answer-options {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
-            flex-grow: 1;
-        }
+        .quiz-game-timer { font-size: 2.5em; font-weight: 700; color: var(--primary-color); text-align: center; margin: 15px 0; }
+        .quiz-question-text { font-size: 1.2em; font-weight: 600; text-align: center; line-height: 1.6; margin-bottom: 25px; padding: 15px; background: var(--bg-color); border-radius: 10px; }
+        .quiz-answer-options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; flex-grow: 1; }
         .answer-btn {
             padding: 20px; font-size: 1.1em; font-weight: 600;
             color: white; border-radius: 10px; height: 100px;
             display: flex; align-items: center; justify-content: center;
             text-align: center; line-height: 1.4;
         }
-        .answer-btn:disabled {
-            opacity: 0.7; filter: grayscale(50%);
-        }
-        .answer-btn.selected { /* Jawaban yg dipilih */
-            border: 5px solid white; box-shadow: 0 0 15px rgba(0,0,0,0.3);
-            transform: scale(1.05);
-        }
-        
+        .answer-btn:disabled { opacity: 0.7; filter: grayscale(50%); }
+        .answer-btn.selected { border: 5px solid white; box-shadow: 0 0 15px rgba(0,0,0,0.3); transform: scale(1.05); }
         #answer-btn-0 { background-color: var(--answer-red); }
         #answer-btn-1 { background-color: var(--answer-blue); }
         #answer-btn-2 { background-color: var(--answer-yellow); }
         #answer-btn-3 { background-color: var(--answer-green); }
-        
-        .quiz-game-footer {
-            text-align: center; padding: 15px 0;
-            font-weight: 500; font-size: 1.1em;
-        }
-        
-        /* v8.0: CSS untuk halaman game Guru */
-        .teacher-answer-options {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 15px;
-        }
-        .teacher-answer-item {
-            padding: 15px; border-radius: 10px;
-            font-weight: 500; color: white;
-            display: flex; align-items: center; min-height: 80px;
-        }
-
+        .quiz-game-footer { text-align: center; padding: 15px 0; font-weight: 500; font-size: 1.1em; }
+        .teacher-answer-options { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        .teacher-answer-item { padding: 15px; border-radius: 10px; font-weight: 500; color: white; display: flex; align-items: center; min-height: 80px; }
     </style>
 </head>
 <body>
@@ -461,25 +423,22 @@
                         <h2 id="teacher-question-number">Pertanyaan 1 / 10</h2>
                         <p id="teacher-quiz-title">Kuis Tenses</p>
                     </div>
-                    
                     <h1 class="quiz-question-text" id="teacher-question-text">...</h1>
-                    
                     <div class="teacher-answer-options">
                         <div class="teacher-answer-item" style="background-color: var(--answer-red);" id="teacher-option-0">...</div>
                         <div class="teacher-answer-item" style="background-color: var(--answer-blue);" id="teacher-option-1">...</div>
                         <div class="teacher-answer-item" style="background-color: var(--answer-yellow);" id="teacher-option-2">...</div>
                         <div class="teacher-answer-item" style="background-color: var(--answer-green);" id="teacher-option-3">...</div>
                     </div>
-                    
                     <div class="quiz-game-footer" style="flex-grow: 1; display: flex; flex-direction: column; justify-content: center;">
                         <h2 style="font-size: 2em;" id="teacher-answer-count">0</h2>
                         <p style="font-size: 1.2em; color: #777;">Siswa Telah Menjawab</p>
                     </div>
-                    
                     <button class="primary" id="next-question-btn" disabled>Tampilkan Jawaban (Segera Hadir di v9.0)</button>
                 </div>
             </div>
-            </div>
+
+        </div>
 
         <div id="student-dashboard-page" class="page">
             
@@ -610,24 +569,21 @@
                         <h2 id="student-question-number">Pertanyaan 1 / 10</h2>
                         <p id="student-quiz-title">Kuis Tenses</p>
                     </div>
-                    
                     <h1 class="quiz-game-timer" id="student-question-timer">20</h1>
-                    
                     <h1 class="quiz-question-text" id="student-question-text">...</h1>
-                    
                     <div class="quiz-answer-options">
                         <button class="answer-btn" id="answer-btn-0" data-index="0">...</button>
                         <button class="answer-btn" id="answer-btn-1" data-index="1">...</button>
                         <button class="answer-btn" id="answer-btn-2" data-index="2">...</button>
                         <button class="answer-btn" id="answer-btn-3" data-index="3">...</button>
                     </div>
-                    
                     <div class="quiz-game-footer" id="student-quiz-footer">
                         Pilih jawabanmu!
                     </div>
                 </div>
             </div>
-            </div>
+
+        </div>
 
     </div> 
     
@@ -677,8 +633,8 @@
         let currentQuizSessionId = null;
         let currentLobbyPlayersListener = null;
         let currentLobbyStateListener = null;
-        let currentAnswerListener = null; // v8.0: Listener jawaban guru
-        let questionTimerInterval = null; // v8.0: Interval timer siswa
+        let currentAnswerListener = null;
+        let questionTimerInterval = null;
 
         // --- Page Navigation ---
         function showPage(pageId) {
@@ -686,10 +642,8 @@
             document.getElementById(pageId).classList.add('active');
         }
         
-        // v8.0: Modifikasi showSubPage untuk unsubscribe semua listener
         function showSubPage(pageElement, subPageId) {
             const currentPage = pageElement.querySelector('.sub-page.active');
-            
             pageElement.querySelectorAll('.sub-page').forEach(sp => sp.classList.remove('active'));
             pageElement.querySelector(`#${subPageId}`).classList.add('active');
             
@@ -699,17 +653,11 @@
                 if (currentQuizQuestionsListener) { currentQuizQuestionsListener(); currentQuizQuestionsListener = null; }
                 if (currentLobbyPlayersListener) { currentLobbyPlayersListener(); currentLobbyPlayersListener = null; }
                 if (currentLobbyStateListener) { currentLobbyStateListener(); currentLobbyStateListener = null; }
-                if (currentAnswerListener) { currentAnswerListener(); currentAnswerListener = null; } // v8.0
-                if (questionTimerInterval) { clearInterval(questionTimerInterval); questionTimerInterval = null; } // v8.0
-                
-                // TODO: Logika meninggalkan sesi kuis (misal hapus player)
-                // if (currentPage.id === 'student-quiz-lobby-page' || currentPage.id === 'student-quiz-game-page') {
-                //     leaveQuizSession(); // Fungsi yang akan dibuat nanti
-                // }
+                if (currentAnswerListener) { currentAnswerListener(); currentAnswerListener = null; }
+                if (questionTimerInterval) { clearInterval(questionTimerInterval); questionTimerInterval = null; }
             }
         }
         
-        // Setup tombol kembali (Back)
         document.querySelectorAll('.back-btn').forEach(btn => {
             btn.addEventListener('click', () => {
                 const targetPageId = btn.dataset.target;
@@ -728,7 +676,6 @@
             } else {
                  currentUser = null;
                  currentUserData = null;
-                 // Hentikan semua listener realtime saat logout
                  listeners.forEach(unsub => unsub());
                  listeners = [];
                  if (currentChatListener) { currentChatListener(); currentChatListener = null; }
@@ -737,7 +684,6 @@
                  if (currentLobbyStateListener) { currentLobbyStateListener(); currentLobbyStateListener = null; }
                  if (currentAnswerListener) { currentAnswerListener(); currentAnswerListener = null; }
                  if (questionTimerInterval) { clearInterval(questionTimerInterval); questionTimerInterval = null; }
-                    
                  showPage('login-page');
                  loginBtn.style.display = 'inline-flex';
                  loginSpinner.style.display = 'none';
@@ -804,35 +750,24 @@
         
         function initializeTeacherDashboard(user) {
             setupLogout('teacher-logout-btn');
-            
-            // Setup Tombol Navigasi Sub-Halaman
             document.getElementById('go-to-create-task-btn').onclick = () => showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-task-page');
             document.getElementById('go-to-announcements-btn').onclick = () => showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-announcement-page');
             document.getElementById('go-to-materials-btn').onclick = () => showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-material-page');
             document.getElementById('go-to-attendance-btn').onclick = () => showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-attendance-page');
             document.getElementById('go-to-chat-btn-teacher').onclick = () => showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-chat-page');
             document.getElementById('go-to-quiz-btn').onclick = () => showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-quiz-page');
-
-            // Setup Tombol Aksi
             document.getElementById('create-class-btn').onclick = createClass;
             document.getElementById('create-task-btn').onclick = createAssignment;
             document.getElementById('publish-announcement-btn').onclick = publishAnnouncement;
             document.getElementById('upload-material-btn').onclick = initPicker;
             document.getElementById('view-attendance-btn').onclick = viewAttendance;
             document.getElementById('create-quiz-btn').onclick = createQuiz;
-            
-            // v5.0: Setup Aksi Chat
             document.getElementById('chat-class-select-teacher').addEventListener('change', loadTeacherChat);
             document.getElementById('send-chat-btn-teacher').onclick = sendChatMessageTeacher;
             document.getElementById('chat-input-teacher').addEventListener('keypress', e => { if (e.key === 'Enter') sendChatMessageTeacher(); });
-            
-            // v8.0: Setup Aksi Kuis Game
             document.getElementById('start-quiz-game-btn').onclick = startQuizGame;
-            
-            // Muat data awal
             loadTeacherData();
             setupDeleteListeners(); 
-            
             showPage('teacher-dashboard-page');
             showSubPage(document.getElementById('teacher-dashboard-page'), 'teacher-main-menu');
             document.getElementById('attendance-recap-date').valueAsDate = new Date();
@@ -841,7 +776,6 @@
         function loadTeacherData() {
             listeners.forEach(unsub => unsub());
             listeners = [];
-            
             const classListEl = document.getElementById('class-code-list');
             let classListener = db.collection('classes').where('teacherId', '==', currentUser.uid)
                 .onSnapshot(snapshot => {
@@ -866,7 +800,6 @@
                 }, error => { console.error("Error load classes:", error); classListEl.innerHTML = '<p class="error">Gagal memuat kelas.</p>'; });
             listeners.push(classListener);
 
-            // Muat Daftar Tugas
             const taskListEl = document.getElementById('teacher-assignment-list');
             let taskListener = db.collection('assignments').where('teacherId', '==', currentUser.uid).orderBy('deadline', 'desc')
                 .onSnapshot(snapshot => {
@@ -880,7 +813,6 @@
                     taskListEl.querySelectorAll('.content-item').forEach(item => { item.addEventListener('click', () => { viewSubmissions(item.dataset.id, item.dataset.title); }); });
                 }, error => { console.error("Error load assignments:", error); taskListEl.innerHTML = '<p class="error">Gagal memuat tugas.</p>'; });
             listeners.push(taskListener);
-            
             loadTeacherAnnouncements();
             loadTeacherMaterials();
             loadTeacherQuizzes();
@@ -1210,7 +1142,6 @@
                 const sessionDoc = await sessionRef.get();
                 const sessionData = sessionDoc.data();
                 
-                // 1. Ambil (fetch) semua pertanyaan dari "Bank Soal"
                 const questionsSnapshot = await db.collection('quizzes').doc(sessionData.quizId).collection('questions').get();
                 
                 if (questionsSnapshot.empty) {
@@ -1219,22 +1150,19 @@
                     return;
                 }
                 
-                // 2. Format pertanyaan menjadi array untuk disimpan di sesi
                 const questionsArray = [];
                 questionsSnapshot.forEach(doc => {
                     questionsArray.push(doc.data());
                 });
                 
-                // 3. Update dokumen sesi untuk memulai kuis
                 await sessionRef.update({
                     status: "in-progress",
                     currentQuestionIndex: 0,
                     questionCount: questionsArray.length,
-                    questions: questionsArray // Simpan salinan pertanyaan ke sesi
+                    questions: questionsArray 
                 });
                 
-                // 4. Pindah ke halaman game guru (sudah di-handle listener di v9/v10)
-                // Untuk v8, kita panggil manual
+                // Pindah ke halaman game guru
                 showTeacherGamePage(sessionData.quizTitle, questionsArray, 0);
 
             } catch (error) {
@@ -1249,7 +1177,6 @@
             
             const currentQuestion = questions[index];
             
-            // Tampilkan info pertanyaan
             document.getElementById('teacher-question-number').textContent = `Pertanyaan ${index + 1} / ${questions.length}`;
             document.getElementById('teacher-quiz-title').textContent = quizTitle;
             document.getElementById('teacher-question-text').textContent = currentQuestion.questionText;
@@ -1258,7 +1185,6 @@
             document.getElementById('teacher-option-2').textContent = currentQuestion.options[2];
             document.getElementById('teacher-option-3').textContent = currentQuestion.options[3];
             
-            // Setup listener untuk jumlah jawaban
             const answerCountEl = document.getElementById('teacher-answer-count');
             if (currentAnswerListener) { currentAnswerListener(); }
             
@@ -1270,7 +1196,7 @@
         
 
         // =================================================================
-        // == STUDENT DASHBOARD LOGIC (v8.0)
+        // == STUDENT DASHBOARD LOGIC (v8.1)
         // =================================================================
         
         function initializeStudentDashboard(user, userData) {
@@ -1292,11 +1218,9 @@
             document.getElementById('send-chat-btn-student').onclick = sendChatMessageStudent;
             document.getElementById('chat-input-student').addEventListener('keypress', e => { if (e.key === 'Enter') sendChatMessageStudent(); });
             
-            // v7.0: Setup Aksi Kuis Siswa
             document.getElementById('go-to-quiz-join-btn-student').onclick = () => showSubPage(document.getElementById('student-dashboard-page'), 'student-quiz-join-page');
             document.getElementById('join-quiz-btn').onclick = joinQuizSession;
             
-            // v8.0: Setup listener tombol jawaban
             document.querySelectorAll('.answer-btn').forEach(btn => {
                 btn.addEventListener('click', () => submitQuizAnswer(btn.dataset.index));
             });
@@ -1452,32 +1376,58 @@
             messagesAreaElement.innerHTML = html;
         }
         
-        // --- (Fungsi Lobi Siswa v7.0) ---
+        // --- (Fungsi Lobi Siswa v8.2) ---
         async function joinQuizSession() {
             const pin = document.getElementById('quiz-pin-input').value.trim();
-            if (pin.length !== 6) { alert("PIN Kuis harus 6 digit angka."); return; }
+            if (pin.length !== 6) {
+                alert("PIN Kuis harus 6 digit angka."); return;
+            }
+            
             const btn = document.getElementById('join-quiz-btn');
-            btn.disabled = true; btn.textContent = "Mencari...";
+            btn.disabled = true;
+            btn.textContent = "Mencari...";
+            
             try {
-                const query = await db.collection('quizSessions').where('pin', '==', pin).where('status', '==', 'lobby').limit(1).get();
+                // ==========================================================
+                // == v8.2: PERBAIKAN TYPO ADA DI SINI ==
+                // ==========================================================
+                const query = await db.collection('quizSessions')
+                                    .where('pin', '==', pin)
+                                    .where('status', '==', 'lobby')
+                                    .where('classId', '==', currentUserData.classId) // Baris ini sudah benar
+                                    .limit(1).get(); // <-- Tanda kurung sudah benar
+                // ==========================================================
+                
                 if (query.empty) {
-                    alert("PIN tidak ditemukan atau kuis sudah dimulai.");
+                    alert("PIN tidak ditemukan, bukan untuk kelas Anda, atau kuis sudah dimulai.");
                     btn.disabled = false; btn.textContent = "Gabung"; return;
                 }
+                
                 const sessionDoc = query.docs[0];
                 const sessionData = sessionDoc.data();
+                
+                // Cek classId (sudah difilter kueri, tapi bagus untuk keamanan ganda)
                 if (sessionData.classId !== currentUserData.classId) {
                     alert("PIN Kuis ini tidak ditujukan untuk kelas Anda.");
                     btn.disabled = false; btn.textContent = "Gabung"; return;
                 }
-                await db.collection('quizSessions').doc(sessionDoc.id).collection('players').doc(currentUser.uid).set({ studentName: currentUser.displayName, score: 0 });
+                
+                await db.collection('quizSessions').doc(sessionDoc.id)
+                        .collection('players').doc(currentUser.uid)
+                        .set({
+                            studentName: currentUser.displayName,
+                            score: 0
+                        });
+                
                 showStudentQuizLobby(sessionDoc.id, sessionData.quizTitle);
+                
             } catch (error) {
                 console.error("Error joining quiz session:", error);
                 alert("Gagal bergabung dengan sesi. Coba lagi.");
                 btn.disabled = false; btn.textContent = "Gabung";
             }
         }
+        
         function showStudentQuizLobby(sessionId, quizTitle) {
             currentQuizSessionId = sessionId;
             document.getElementById('lobby-quiz-title-student').textContent = quizTitle;
@@ -1491,7 +1441,6 @@
                 renderLobbyPlayers(snapshot, playerListElement, playerCountElement);
             }, error => { console.error("Error listening to players:", error); playerListElement.innerHTML = '<p class="error">Gagal memuat daftar siswa.</p>'; });
 
-            // v8.0: Listener status sesi DIUBAH
             if (currentLobbyStateListener) { currentLobbyStateListener(); }
             const sessionQuery = db.collection('quizSessions').doc(sessionId);
             currentLobbyStateListener = sessionQuery.onSnapshot(doc => {
@@ -1503,13 +1452,11 @@
                 
                 const sessionData = doc.data();
                 if (sessionData.status === 'in-progress') {
-                    // KUIS DIMULAI! Pindah ke halaman game
-                    showStudentGamePage(sessionData);
+                    showStudentGamePage(sessionData); // v8.0
                 } else if (sessionData.status === 'finished') {
                     alert("Kuis telah selesai.");
                     showSubPage(document.getElementById('student-dashboard-page'), 'student-main-menu');
                 }
-                // Jika status 'lobby', diam di tempat
             }, error => {
                 console.error("Error listening to session state:", error);
                 alert("Koneksi ke sesi kuis terputus.");
@@ -1522,39 +1469,32 @@
         // =================================================================
 
         function showStudentGamePage(sessionData) {
-            // Hentikan listener lobi, kita sekarang di dalam game
             if (currentLobbyPlayersListener) { currentLobbyPlayersListener(); currentLobbyPlayersListener = null; }
-            
             showSubPage(document.getElementById('student-dashboard-page'), 'student-quiz-game-page');
             
             const index = sessionData.currentQuestionIndex;
             const currentQuestion = sessionData.questions[index];
             
-            // Tampilkan info pertanyaan
             document.getElementById('student-question-number').textContent = `Pertanyaan ${index + 1} / ${sessionData.questionCount}`;
             document.getElementById('student-quiz-title').textContent = sessionData.quizTitle;
             document.getElementById('student-question-text').textContent = currentQuestion.questionText;
             
-            // Tampilkan opsi jawaban di tombol
             document.getElementById('answer-btn-0').textContent = currentQuestion.options[0];
             document.getElementById('answer-btn-1').textContent = currentQuestion.options[1];
             document.getElementById('answer-btn-2').textContent = currentQuestion.options[2];
             document.getElementById('answer-btn-3').textContent = currentQuestion.options[3];
             
-            // Reset tombol
             document.querySelectorAll('.answer-btn').forEach(btn => {
                 btn.disabled = false;
                 btn.classList.remove('selected');
             });
             document.getElementById('student-quiz-footer').textContent = "Pilih jawabanmu!";
             
-            // Mulai Timer
-            startQuestionTimer(20); // Timer 20 detik
+            startQuestionTimer(20);
         }
         
         function startQuestionTimer(duration) {
             if (questionTimerInterval) { clearInterval(questionTimerInterval); }
-            
             let timeLeft = duration;
             const timerElement = document.getElementById('student-question-timer');
             timerElement.textContent = timeLeft;
@@ -1562,22 +1502,19 @@
             questionTimerInterval = setInterval(() => {
                 timeLeft--;
                 timerElement.textContent = timeLeft;
-                
                 if (timeLeft <= 0) {
                     clearInterval(questionTimerInterval);
                     timerElement.textContent = "0";
-                    lockStudentAnswers(true); // Kunci jawaban karena waktu habis
+                    lockStudentAnswers(true);
                 }
             }, 1000);
         }
         
         function lockStudentAnswers(isTimeUp) {
             if (questionTimerInterval) { clearInterval(questionTimerInterval); }
-            
             document.querySelectorAll('.answer-btn').forEach(btn => {
                 btn.disabled = true;
             });
-            
             const footer = document.getElementById('student-quiz-footer');
             if (isTimeUp) {
                 footer.textContent = "Waktu Habis! ⌛";
@@ -1588,28 +1525,21 @@
         
         async function submitQuizAnswer(answerIndex) {
             if (!currentQuizSessionId) { return; }
-            
             const index = parseInt(answerIndex);
-            
-            // Kunci jawaban secara visual
             lockStudentAnswers(false);
             document.getElementById(`answer-btn-${index}`).classList.add('selected');
 
             try {
-                // Kirim jawaban ke Firestore
                 const answerRef = db.collection('quizSessions').doc(currentQuizSessionId)
                                     .collection('currentAnswers').doc(currentUser.uid);
-                
                 await answerRef.set({
                     answerIndex: index,
                     studentName: currentUser.displayName,
                     timestamp: firebase.firestore.FieldValue.serverTimestamp()
                 });
-                
             } catch (error) {
                 console.error("Error submitting answer:", error);
                 alert("Gagal mengirim jawaban. Coba lagi.");
-                // Buka kunci lagi jika gagal
                 document.querySelectorAll('.answer-btn').forEach(btn => {
                     btn.disabled = false;
                     btn.classList.remove('selected');
@@ -1617,7 +1547,6 @@
                 document.getElementById('student-quiz-footer').textContent = "Pilih jawabanmu!";
             }
         }
-        
 
     </script>
 
