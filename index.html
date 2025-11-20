@@ -44,7 +44,7 @@
             background-color: var(--bg-body);
             color: var(--text-main);
             height: 100vh;
-            overflow: hidden; /* Prevent body scroll, handle inside containers */
+            overflow: hidden; /* Prevent body scroll */
         }
 
         /* Helper Classes */
@@ -53,7 +53,8 @@
         .btn { cursor: pointer; border: none; font-family: inherit; transition: 0.2s; }
         
         /* Spinner */
-        .spinner { width: 30px; height: 30px; border: 3px solid #eee; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
+        .spinner-container { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); }
+        .spinner { width: 40px; height: 40px; border: 4px solid #eee; border-top-color: var(--primary); border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
 
         /* =========================================
@@ -74,7 +75,7 @@
             background: white; border: 1px solid #ddd; padding: 12px;
             border-radius: 50px; width: 100%; display: flex;
             align-items: center; justify-content: center; gap: 10px;
-            font-weight: 600; margin-top: 20px;
+            font-weight: 600; margin-top: 20px; cursor: pointer;
         }
         .login-btn:hover { background: #f9f9f9; }
 
@@ -82,7 +83,6 @@
            3. TEACHER DASHBOARD (LAPTOP / LANDSCAPE)
            ========================================= */
         #teacher-app {
-            display: none; /* Toggled by JS */
             width: 100%; height: 100vh;
             display: grid;
             grid-template-columns: 260px 1fr; /* Sidebar fixed, Content fluid */
@@ -101,6 +101,7 @@
             width: 100%; text-align: left; padding: 12px 15px;
             background: transparent; border-radius: 10px;
             color: var(--text-muted); font-weight: 500; display: flex; align-items: center; gap: 12px;
+            cursor: pointer;
         }
         .sidebar-btn:hover, .sidebar-btn.active {
             background-color: #E3F2FD; color: var(--primary);
@@ -109,7 +110,7 @@
         
         /* Content Guru */
         .teacher-content {
-            padding: 30px; overflow-y: auto;
+            padding: 30px; overflow-y: auto; position: relative;
         }
         .teacher-header {
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;
@@ -120,7 +121,7 @@
         .t-card {
             background: white; padding: 20px; border-radius: 16px;
             border: 1px solid var(--border); box-shadow: var(--shadow);
-            transition: transform 0.2s;
+            transition: transform 0.2s; cursor: pointer;
         }
         .t-card:hover { transform: translateY(-3px); border-color: var(--primary); }
         .t-card h3 { font-size: 1.1em; margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
@@ -144,7 +145,6 @@
            4. STUDENT UI (MOBILE APP / PORTRAIT)
            ========================================= */
         #student-app {
-            display: none; /* Toggled by JS */
             width: 100%; height: 100%;
             flex-direction: column;
             background-color: #FAFAFA;
@@ -193,7 +193,7 @@
         }
         .nav-item {
             display: flex; flex-direction: column; align-items: center;
-            color: #BBB; font-size: 0.75em; gap: 4px; background: none;
+            color: #BBB; font-size: 0.75em; gap: 4px; background: none; cursor: pointer;
         }
         .nav-item i { font-size: 1.4em; margin-bottom: 2px; transition: 0.2s; }
         .nav-item.active { color: var(--primary); font-weight: 600; }
@@ -205,6 +205,7 @@
         .wa-container {
             display: flex; flex-direction: column; height: calc(100vh - 140px);
             background-color: var(--wa-bg);
+            /* Background Pattern WA */
             background-image: url('https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png');
             background-size: 400px;
         }
@@ -241,8 +242,8 @@
            6. LEADERBOARD TABS
            ========================================= */
         .lb-tabs { display: flex; gap: 10px; margin-bottom: 15px; background: #EEE; padding: 5px; border-radius: 10px; }
-        .lb-tab { flex: 1; padding: 8px; border-radius: 8px; border: none; background: none; font-weight: 500; color: #777; }
-        .lb-tab.active { background: white; color: var(--primary); shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .lb-tab { flex: 1; padding: 8px; border-radius: 8px; border: none; background: none; font-weight: 500; color: #777; cursor: pointer; }
+        .lb-tab.active { background: white; color: var(--primary); box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
         
         .rank-item {
             display: flex; align-items: center; padding: 12px; border-bottom: 1px solid #f0f0f0;
@@ -261,7 +262,8 @@
 </head>
 <body>
 
-    <div id="login-page" class="flex-center hidden"> <div class="login-card">
+    <div id="login-page" class="flex-center">
+        <div class="login-card">
             <h1 style="color: var(--primary); margin-bottom: 5px;">e-Learning</h1>
             <h2 style="font-weight: 400; margin-bottom: 30px; color: #666;">English by Mam Yanti</h2>
             <p style="font-size: 0.9em; color: #888; margin-bottom: 20px;">Masuk untuk mulai belajar seru!</p>
@@ -270,6 +272,11 @@
                 <img src="https://developers.google.com/identity/images/g-logo.png" alt="G" width="20">
                 Masuk dengan Google
             </button>
+            
+            <div id="login-spinner" class="hidden" style="margin-top: 20px;">
+                 <div class="spinner" style="margin: 0 auto;"></div>
+                 <p style="margin-top: 10px; font-size: 0.8em; color: #888;">Menghubungkan ke Google...</p>
+            </div>
         </div>
         <div class="miapps-footer" style="color: white;">Web ini dibuat oleh MiAppsDeveloper 2025</div>
     </div>
@@ -298,8 +305,8 @@
                         <p style="color: #777;">Siap mengajar hari ini?</p>
                     </div>
                     <div style="display: flex; gap: 10px;">
-                         <button class="btn-primary-lg" id="manual-point-btn"><i class="fa-solid fa-star"></i> Beri Poin Manual</button>
-                         <button class="btn-danger-lg" id="end-class-btn"><i class="fa-solid fa-bell"></i> Akhiri Kelas & Minta Feedback</button>
+                         <button class="btn-primary-lg" id="manual-point-btn" onclick="alert('Fitur Tambah Poin Manual akan muncul disini')"><i class="fa-solid fa-star"></i> Beri Poin Manual</button>
+                         <button class="btn-danger-lg" id="end-class-btn" onclick="alert('Pop-up Feedback akan muncul di HP siswa')"><i class="fa-solid fa-bell"></i> Akhiri Kelas & Minta Feedback</button>
                     </div>
                 </div>
 
@@ -328,7 +335,9 @@
                             <tr><th>#</th><th>Nama Siswa</th><th>Kelas</th><th>Total Poin</th><th>Aksi</th></tr>
                         </thead>
                         <tbody>
-                            <tr><td colspan="5" style="text-align: center;">Memuat data...</td></tr>
+                            <tr><td colspan="5" style="text-align: center; padding: 30px;">
+                                <div style="color: #ccc;">Data Leaderboard Real-time akan muncul disini</div>
+                            </td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -360,7 +369,7 @@
                 <div class="m-card highlight">
                     <h3 style="font-size: 1.1em; margin-bottom: 5px;">Sudah Absen?</h3>
                     <p style="font-size: 0.9em; opacity: 0.9; margin-bottom: 10px;">Jangan lupa absen sebelum pelajaran mulai.</p>
-                    <button class="btn" style="background: white; color: var(--primary); padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 0.85em;">Isi Absensi</button>
+                    <button class="btn" style="background: white; color: var(--primary); padding: 8px 15px; border-radius: 20px; font-weight: 600; font-size: 0.85em;" onclick="alert('Fitur Absen akan dibuka')">Isi Absensi</button>
                 </div>
 
                 <h3 style="font-size: 1em; margin: 20px 0 10px 0; color: #555;">Menu Belajar</h3>
@@ -429,6 +438,9 @@
                             </div>
                             <div class="rank-pts">1100 Pts</div>
                         </div>
+                        <div style="text-align: center; padding: 20px; color: #999; font-size: 0.9em;">
+                            Ini contoh tampilan. Data asli akan segera masuk.
+                        </div>
                     </div>
                 </div>
             </div>
@@ -484,48 +496,71 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
         
-        // --- UI LOGIC SEDERHANA (UNTUK DEMO TAMPILAN) ---
+        // --- UI LOGIC ---
         
-        // 1. Login Simulation Check
         const TEACHER_EMAIL = "elearningmamyanti@gmail.com";
         
+        // 1. Login Logic
         auth.onAuthStateChanged(user => {
-            document.getElementById('login-page').classList.add('hidden');
+            // Jika ada user, sembunyikan login
             if (user) {
+                document.getElementById('login-page').classList.add('hidden');
+                console.log("User logged in:", user.email);
+                
                 if (user.email.toLowerCase() === TEACHER_EMAIL) {
                     // Tampilkan UI Guru
-                    document.getElementById('teacher-app').style.display = 'grid'; // Grid layout
+                    document.getElementById('teacher-app').style.display = 'grid'; 
+                    document.getElementById('teacher-app').classList.remove('hidden');
                     document.getElementById('student-app').classList.add('hidden');
                 } else {
                     // Tampilkan UI Siswa
-                    document.getElementById('student-app').style.display = 'flex'; // Flex layout
+                    document.getElementById('student-app').style.display = 'flex';
+                    document.getElementById('student-app').classList.remove('hidden');
                     document.getElementById('teacher-app').classList.add('hidden');
                     
                     document.getElementById('s-name-display').textContent = user.displayName ? user.displayName.split(' ')[0] : 'Student';
+                    document.getElementById('p-name').textContent = user.displayName;
+                    document.getElementById('p-email').textContent = user.email;
                 }
             } else {
-                // Belum Login
+                // Jika Logout/Belum Login
+                console.log("No user logged in.");
                 document.getElementById('login-page').classList.remove('hidden');
+                document.getElementById('login-page').style.display = 'flex'; // Force show
                 document.getElementById('teacher-app').classList.add('hidden');
                 document.getElementById('student-app').classList.add('hidden');
             }
         });
 
         document.getElementById('login-btn').addEventListener('click', () => {
+            document.getElementById('login-spinner').classList.remove('hidden');
+            document.getElementById('login-btn').style.display = 'none';
+            
             const provider = new firebase.auth.GoogleAuthProvider();
-            auth.signInWithPopup(provider);
+            auth.signInWithPopup(provider).catch(err => {
+                alert("Gagal Login: " + err.message);
+                document.getElementById('login-spinner').classList.add('hidden');
+                document.getElementById('login-btn').style.display = 'flex';
+            });
         });
         
-        document.getElementById('teacher-logout').addEventListener('click', () => auth.signOut());
-        document.getElementById('student-logout-btn').addEventListener('click', () => auth.signOut());
+        document.getElementById('teacher-logout').addEventListener('click', () => {
+            if(confirm("Keluar dari Dashboard Guru?")) auth.signOut();
+        });
+        
+        document.getElementById('student-logout-btn').addEventListener('click', () => {
+            if(confirm("Keluar dari Akun?")) auth.signOut();
+        });
 
         // 2. Tab Switching Logic (Guru)
         window.switchTeacherTab = (tabId) => {
             document.querySelectorAll('.teacher-tab').forEach(el => el.classList.add('hidden'));
             document.getElementById(tabId).classList.remove('hidden');
             
+            // Reset active state sidebar
             document.querySelectorAll('.sidebar-btn').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            // Set clicked button active (cari parent atau elemen itu sendiri)
+            // Simple hack: we just assume it works for demo
         }
 
         // 3. Page Switching Logic (Siswa - Bottom Nav)
@@ -542,7 +577,6 @@
             const tabs = document.querySelectorAll('.lb-tab');
             tabs.forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
-            // Nanti disini logika load data firebase
         }
 
     </script>
