@@ -1,0 +1,1214 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>e-Learning English by Mam Yanti</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        /* (CSS v10.0 - WhatsApp UI & Modern Polish) */
+        :root {
+            --primary-color: #008069; /* WA Green */
+            --secondary-color: #25D366;
+            --text-color: #111b21;
+            --danger-color: #ea0038;
+            --bg-color: #e2e5e9;
+            --card-bg: #ffffff;
+            --chat-bg: #efeae2; /* WA Chat Background color */
+            --chat-self: #d9fdd3;
+            --chat-other: #ffffff;
+            --border-color: #e9edef;
+            --gold: #FFD700; --silver: #C0C0C0; --bronze: #CD7F32;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Poppins', sans-serif; background-color: #d1d7db; color: var(--text-color);
+            display: flex; justify-content: center; align-items: center; min-height: 100vh;
+            -webkit-tap-highlight-color: transparent;
+        }
+        #app-container {
+            width: 100%; max-width: 480px; height: 100vh; background-color: var(--bg-color);
+            display: flex; flex-direction: column; overflow: hidden; position: relative;
+            @media (min-width: 481px) {
+                max-height: 90vh; min-height: 700px; border-radius: 20px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+            }
+        }
+        
+        /* Scrollbar Hide */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #ccc; border-radius: 5px; }
+
+        .page { flex-grow: 1; overflow-y: auto; padding: 20px; display: none; padding-bottom: 80px; background: var(--bg-color); }
+        .page.active { display: block; }
+        .sub-page { display: none; flex-grow: 1; flex-direction: column; height: 100%; }
+        .sub-page.active { display: flex; }
+
+        /* Header Styles */
+        .header { 
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 15px 20px; background: var(--primary-color); color: white;
+            position: sticky; top: 0; z-index: 10; box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        .header h1 { font-size: 1.2em; font-weight: 600; margin: 0; }
+        .header button { color: white; background: none; padding: 0; width: auto; }
+
+        /* Cards & Inputs */
+        .feature-card {
+            background: var(--card-bg); border-radius: 12px; padding: 15px; margin-bottom: 15px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        .feature-card h3 { 
+            font-size: 1em; font-weight: 600; margin-bottom: 10px; color: var(--primary-color); 
+            border-bottom: 1px solid var(--border-color); padding-bottom: 8px;
+        }
+        
+        input, textarea, select {
+            width: 100%; padding: 10px 12px; border-radius: 8px; border: 1px solid #ccc;
+            margin-bottom: 10px; font-family: inherit; font-size: 0.95em; outline: none;
+        }
+        input:focus, textarea:focus { border-color: var(--primary-color); }
+
+        button {
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+            padding: 10px; border-radius: 20px; font-size: 0.95em; cursor: pointer; border: none; font-weight: 600;
+            transition: transform 0.1s;
+        }
+        button:active { transform: scale(0.98); }
+        button.primary { background-color: var(--primary-color); color: white; }
+        button.secondary { background-color: #e9edef; color: var(--text-color); }
+        button.danger { background-color: var(--danger-color); color: white; }
+        
+        /* Lists */
+        .content-item { 
+            padding: 12px; border-bottom: 1px solid var(--border-color); background: white; 
+            margin-bottom: 5px; border-radius: 8px;
+        }
+        .list-actions { display: flex; gap: 5px; justify-content: flex-end; margin-top: 5px; }
+        .list-actions button { width: auto; padding: 5px 10px; font-size: 0.75em; }
+
+        /* --- WHATSAPP STYLE CHAT --- */
+        .chat-page-container { 
+            display: flex; flex-direction: column; flex-grow: 1; 
+            background-color: var(--chat-bg); 
+            background-image: url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png");
+            opacity: 0.95;
+        }
+        .chat-messages { flex-grow: 1; padding: 15px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
+        .chat-message { max-width: 80%; position: relative; padding: 6px 10px 8px 10px; border-radius: 8px; font-size: 0.9em; line-height: 1.4; box-shadow: 0 1px 0.5px rgba(0,0,0,0.13); }
+        .chat-message.self { align-self: flex-end; background-color: var(--chat-self); border-top-right-radius: 0; }
+        .chat-message.other { align-self: flex-start; background-color: var(--chat-other); border-top-left-radius: 0; }
+        .chat-message .sender { font-size: 0.75em; font-weight: 700; color: var(--primary-color); margin-bottom: 2px; }
+        .chat-message .time { font-size: 0.65em; color: #667781; text-align: right; margin-top: 2px; display: block; }
+        .chat-input-area { 
+            padding: 10px; background: #f0f2f5; display: flex; align-items: center; gap: 10px;
+        }
+        .chat-input-area input { margin: 0; border-radius: 20px; border: none; padding: 12px; flex-grow: 1; }
+        .chat-input-area button { width: 40px; height: 40px; border-radius: 50%; padding: 0; }
+
+        /* Login Page */
+        #login-page { background: linear-gradient(135deg, #008069 0%, #25D366 100%); }
+        .login-card { text-align: center; padding: 40px 20px; border-radius: 20px; background: white; width: 90%; }
+        
+        /* Popup / Modal */
+        .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 100; justify-content: center; align-items: center; }
+        .modal-overlay.active { display: flex; animation: fadeIn 0.3s; }
+        .modal-card { background: white; width: 90%; max-width: 380px; padding: 25px; border-radius: 15px; text-align: center; position: relative; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* Material Live Badge */
+        .live-badge { background: red; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.7em; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+
+        /* Leaderboard */
+        .leaderboard-item { display: flex; align-items: center; padding: 10px; background: white; border-bottom: 1px solid #eee; }
+        .leaderboard-item .rank { font-weight: bold; width: 30px; text-align: center; }
+        .leaderboard-item .info { flex-grow: 1; margin-left: 10px; }
+        .leaderboard-item .points { font-weight: bold; color: var(--primary-color); }
+
+        /* Spinner */
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary-color); border-radius: 50%; width: 30px; height: 30px; animation: spin 1s linear infinite; margin: 0 auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+
+    <!-- LOGIN -->
+    <div id="login-page" class="page active" style="padding: 0; display: flex;">
+        <div class="login-card">
+            <h1 style="color:var(--primary-color);">e-Learning English</h1>
+            <p>Masuk dengan akun Google untuk mulai belajar.</p>
+            <button id="login-btn" style="background:white; border:1px solid #ddd; color:#333; margin-top:20px;">
+                <img src="https://developers.google.com/identity/images/g-logo.png" width="20"> Masuk dengan Google
+            </button>
+            <div id="login-spinner" style="display:none; margin-top:20px;"><div class="spinner"></div></div>
+        </div>
+    </div>
+
+    <!-- TEACHER DASHBOARD -->
+    <div id="teacher-dashboard-page" class="page">
+        <div id="teacher-main-menu" class="sub-page active">
+            <div class="header">
+                <h1>Dashboard Guru</h1>
+                <button id="teacher-logout-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+            
+            <!-- MENU GRID -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 15px;">
+                <div class="feature-card" onclick="showSubPage('teacher-dashboard-page','teacher-points-page')" style="cursor:pointer; text-align:center;">
+                    <i class="fa-solid fa-star" style="font-size:2em; color:var(--gold);"></i><br>Poin & Feedback
+                </div>
+                <div class="feature-card" onclick="showSubPage('teacher-dashboard-page','teacher-ice-breaking-page')" style="cursor:pointer; text-align:center;">
+                    <i class="fa-solid fa-dice" style="font-size:2em; color:var(--primary-color);"></i><br>Ice Breaking
+                </div>
+                <div class="feature-card" onclick="showSubPage('teacher-dashboard-page','teacher-task-page')" style="cursor:pointer; text-align:center;">
+                    <i class="fa-solid fa-list-check" style="font-size:2em; color:orange;"></i><br>Tugas
+                </div>
+                <div class="feature-card" onclick="showSubPage('teacher-dashboard-page','teacher-material-page')" style="cursor:pointer; text-align:center;">
+                    <i class="fa-solid fa-book" style="font-size:2em; color:#3498db;"></i><br>Materi
+                </div>
+                <div class="feature-card" onclick="showSubPage('teacher-dashboard-page','teacher-chat-page')" style="cursor:pointer; text-align:center;">
+                    <i class="fa-brands fa-whatsapp" style="font-size:2em; color:#25D366;"></i><br>Chat Kelas
+                </div>
+                <div class="feature-card" onclick="showSubPage('teacher-dashboard-page','teacher-quiz-page')" style="cursor:pointer; text-align:center;">
+                    <i class="fa-solid fa-puzzle-piece" style="font-size:2em; color:#9b59b6;"></i><br>Kuis
+                </div>
+                <div class="feature-card" onclick="showSubPage('teacher-dashboard-page','teacher-announcement-page')" style="cursor:pointer; text-align:center;">
+                    <i class="fa-solid fa-bullhorn" style="font-size:2em; color:#e74c3c;"></i><br>Info
+                </div>
+                <div class="feature-card" onclick="showSubPage('teacher-dashboard-page','teacher-attendance-page')" style="cursor:pointer; text-align:center;">
+                    <i class="fa-solid fa-clipboard-user" style="font-size:2em; color:#34495e;"></i><br>Absensi
+                </div>
+            </div>
+
+            <div class="feature-card" style="margin-top:10px;">
+                <h3>Buat Kelas Baru</h3>
+                <input type="text" id="class-name-input" placeholder="Nama Kelas (Misal: XII IPA 1)">
+                <button class="primary" id="create-class-btn">Buat Kelas</button>
+                <div id="class-code-list" class="content-list" style="margin-top:10px;"></div>
+            </div>
+        </div>
+
+        <!-- HALAMAN DETAIL GURU -->
+        
+        <!-- 1. Chat WhatsApp Style -->
+        <div id="teacher-chat-page" class="sub-page">
+            <div class="header">
+                <button class="back-btn" data-target="teacher-main-menu"><i class="fa-solid fa-arrow-left"></i></button>
+                <h1>Chat Kelas</h1>
+            </div>
+            <div style="padding:10px; background:white;">
+                <select id="chat-class-select-teacher"><option value="">-- Pilih Kelas --</option></select>
+            </div>
+            <div class="chat-page-container">
+                <div class="chat-messages" id="chat-messages-teacher"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input-teacher" placeholder="Ketik pesan..." disabled>
+                    <button id="send-chat-btn-teacher" class="primary" disabled><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 2. Poin & Feedback -->
+        <div id="teacher-points-page" class="sub-page">
+            <div class="header"><button class="back-btn" data-target="teacher-main-menu"><i class="fa-solid fa-arrow-left"></i></button><h1>Poin & Feedback</h1></div>
+            
+            <div class="feature-card">
+                <h3>Feedback Siswa</h3>
+                <select id="feedback-class-select"><option value="">-- Pilih Kelas --</option></select>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button class="primary" id="request-feedback-btn">Buka Sesi Feedback</button>
+                    <button class="danger" id="close-feedback-btn" style="display:none;">Tutup Sesi</button>
+                </div>
+                <div id="feedback-results" style="margin-top:15px; max-height:200px; overflow-y:auto;"></div>
+            </div>
+
+            <div class="feature-card">
+                <h3>Leaderboard & Poin Manual</h3>
+                <select id="leaderboard-class-select">
+                    <option value="">-- Pilih Kelas --</option>
+                    <option value="GLOBAL">SEMUA KELAS (Global)</option>
+                </select>
+                <div id="global-leaderboard-container" class="leaderboard-container" style="margin-top:15px; height:200px;">
+                    <p style="text-align:center;color:#999;">Pilih kelas dulu.</p>
+                </div>
+                <div id="manual-point-section" style="margin-top:15px; border-top:1px solid #eee; padding-top:10px; display:none;">
+                    <p style="font-size:0.8em; color:#666;">Klik nama siswa di atas untuk memberi poin.</p>
+                    <input type="text" id="selected-student-name" placeholder="Siswa terpilih" disabled>
+                    <input type="hidden" id="selected-student-id">
+                    <input type="number" id="manual-points-input" placeholder="Jumlah Poin">
+                    <button class="primary" id="submit-manual-point-btn">Kirim Poin</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. Materi & Live Share -->
+        <div id="teacher-material-page" class="sub-page">
+            <div class="header"><button class="back-btn" data-target="teacher-main-menu"><i class="fa-solid fa-arrow-left"></i></button><h1>Materi</h1></div>
+            <div class="feature-card">
+                <h3>Upload Materi (Google Drive)</h3>
+                <select id="material-class-target"><option value="">-- Pilih Kelas --</option></select>
+                <button id="upload-material-btn" class="secondary" style="margin-top:10px;"><i class="fa-brands fa-google-drive"></i> Pilih File</button>
+            </div>
+            <div class="feature-card">
+                <h3>Daftar Materi</h3>
+                <div id="teacher-material-list" class="content-list"></div>
+            </div>
+        </div>
+
+        <!-- 4. Tugas (Edit/Delete) -->
+        <div id="teacher-task-page" class="sub-page">
+            <div class="header"><button class="back-btn" data-target="teacher-main-menu"><i class="fa-solid fa-arrow-left"></i></button><h1>Tugas</h1></div>
+            <div class="feature-card">
+                <h3 id="task-form-title">Buat Tugas Baru</h3>
+                <input type="hidden" id="edit-task-id">
+                <input type="text" id="task-title" placeholder="Judul Tugas">
+                <textarea id="task-desc" placeholder="Deskripsi..."></textarea>
+                <input type="date" id="task-deadline">
+                <select id="task-class-target"><option value="">-- Pilih Kelas --</option></select>
+                <div style="display:flex; gap:5px;">
+                    <button class="primary" id="create-task-btn">Publikasikan</button>
+                    <button class="secondary" id="cancel-edit-task-btn" style="display:none;">Batal</button>
+                </div>
+            </div>
+            <div class="feature-card">
+                <h3>Daftar Tugas Aktif</h3>
+                <div id="teacher-assignment-list" class="content-list"></div>
+            </div>
+            <!-- View Submissions Area -->
+            <div id="teacher-view-submissions-div" class="feature-card" style="display:none;">
+                <h3 id="submission-list-title">Pengumpulan</h3>
+                <div id="submission-list-container" class="content-list"></div>
+                <button class="secondary" onclick="this.parentElement.style.display='none'">Tutup</button>
+            </div>
+        </div>
+
+        <!-- 5. Ice Breaking -->
+        <div id="teacher-ice-breaking-page" class="sub-page">
+            <div class="header"><button class="back-btn" data-target="teacher-main-menu"><i class="fa-solid fa-arrow-left"></i></button><h1>Ice Breaking</h1></div>
+            <div class="feature-card">
+                <h3>Game Generator</h3>
+                <select id="ice-breaking-class-select"><option value="">-- Pilih Kelas --</option></select>
+                <select id="ice-breaking-group-count" style="margin-top:10px;">
+                    <option value="2">2 Kelompok</option><option value="3">3 Kelompok</option>
+                    <option value="4">4 Kelompok</option><option value="5">5 Kelompok</option>
+                </select>
+                <button class="primary" id="start-ice-breaking-btn" style="margin-top:15px;">Acak Kelompok & Misi</button>
+                <button class="danger" id="stop-ice-breaking-btn" style="margin-top:10px; display:none;">Hentikan Game</button>
+            </div>
+            <div id="ice-breaking-result-area" class="feature-card" style="display:none;">
+                <h3>Hasil</h3>
+                <div class="guide-box"><strong>Misi:</strong> <span id="ice-breaking-mission-display"></span></div>
+                <div id="ice-breaking-groups-display"></div>
+            </div>
+        </div>
+
+        <!-- 6. Pengumuman -->
+        <div id="teacher-announcement-page" class="sub-page">
+            <div class="header"><button class="back-btn" data-target="teacher-main-menu"><i class="fa-solid fa-arrow-left"></i></button><h1>Pengumuman</h1></div>
+            <div class="feature-card">
+                <input type="text" id="announcement-title" placeholder="Judul Info">
+                <textarea id="announcement-content" placeholder="Isi pengumuman..."></textarea>
+                <select id="announcement-class-target"><option value="">-- Pilih Kelas --</option></select>
+                <button class="primary" id="publish-announcement-btn">Kirim Info</button>
+            </div>
+            <div class="feature-card"><h3>Riwayat</h3><div id="teacher-announcement-list" class="content-list"></div></div>
+        </div>
+
+        <!-- 7. Absensi -->
+        <div id="teacher-attendance-page" class="sub-page">
+            <div class="header"><button class="back-btn" data-target="teacher-main-menu"><i class="fa-solid fa-arrow-left"></i></button><h1>Absensi</h1></div>
+            <div class="feature-card">
+                <input type="date" id="attendance-recap-date">
+                <select id="attendance-recap-class"><option value="">-- Pilih Kelas --</option></select>
+                <button class="primary" id="view-attendance-btn">Lihat Rekap</button>
+                <div id="attendance-recap-list" class="content-list" style="margin-top:15px;"></div>
+            </div>
+        </div>
+
+        <!-- 8. Kuis & Lobi -->
+        <div id="teacher-quiz-page" class="sub-page">
+            <div class="header"><button class="back-btn" data-target="teacher-main-menu"><i class="fa-solid fa-arrow-left"></i></button><h1>Bank Soal</h1></div>
+            <div class="feature-card">
+                <input type="text" id="quiz-title" placeholder="Judul Kuis"><textarea id="quiz-description" placeholder="Deskripsi"></textarea>
+                <button class="primary" id="create-quiz-btn">Buat Kuis</button>
+            </div>
+            <div class="feature-card">
+                <label>Mulai Sesi Kuis di Kelas:</label>
+                <select id="quiz-class-target-select"><option value="">-- Pilih Kelas --</option></select>
+                <div id="quiz-list-container" class="content-list" style="margin-top:10px;"></div>
+            </div>
+        </div>
+        <div id="teacher-quiz-detail-page" class="sub-page">
+            <div class="header"><button class="back-btn" data-target="teacher-quiz-page"><i class="fa-solid fa-arrow-left"></i></button><h1 id="quiz-detail-title">Detail</h1></div>
+            <div class="feature-card">
+                <h3>Tambah Soal</h3>
+                <textarea id="question-text" placeholder="Pertanyaan"></textarea>
+                <div class="quiz-answer-options" style="margin-top:10px; grid-template-columns:1fr;">
+                    <input id="option-0" placeholder="Opsi A"><input id="option-1" placeholder="Opsi B">
+                    <input id="option-2" placeholder="Opsi C"><input id="option-3" placeholder="Opsi D">
+                </div>
+                <label>Jawaban Benar:</label>
+                <select id="correct-answer-select"><option value="0">A</option><option value="1">B</option><option value="2">C</option><option value="3">D</option></select>
+                <button class="primary" id="add-question-btn" style="margin-top:10px;">Simpan Soal</button>
+            </div>
+            <div class="feature-card"><h3>Daftar Soal</h3><div id="question-list-container" class="content-list"></div></div>
+        </div>
+        <div id="teacher-quiz-lobby-page" class="sub-page">
+            <div class="header"><button class="back-btn" data-target="teacher-quiz-page"><i class="fa-solid fa-arrow-left"></i></button><h1>Lobi Kuis</h1></div>
+            <div class="feature-card" style="text-align:center;">
+                <h1 id="lobby-pin-display" style="font-size:3em; letter-spacing:5px; color:var(--primary-color);">...</h1>
+                <p>PIN untuk Kelas: <strong id="lobby-class-target-teacher">...</strong></p>
+            </div>
+            <div class="feature-card">
+                <h3>Siswa Bergabung (<span id="lobby-player-count-teacher">0</span>)</h3>
+                <div id="lobby-player-list-teacher" style="display:flex; flex-wrap:wrap; gap:5px;"></div>
+            </div>
+            <button class="primary" id="start-quiz-game-btn" style="margin-top:20px; padding:15px;">Mulai Kuis</button>
+        </div>
+        <div id="teacher-quiz-game-page" class="sub-page">
+            <div class="header"><h1>Kuis Berjalan</h1></div>
+            <div class="feature-card">
+                <h2 id="teacher-leaderboard-quiz-title" style="text-align:center;">...</h2>
+                <div id="teacher-leaderboard-container" class="leaderboard-container"></div>
+            </div>
+            <button class="danger" id="finish-quiz-session-btn" style="margin-top:auto;">Akhiri Sesi</button>
+        </div>
+    </div>
+
+    <!-- STUDENT DASHBOARD -->
+    <div id="student-dashboard-page" class="page">
+        <div id="student-main-menu" class="sub-page active">
+            <div class="header">
+                <h1 id="student-welcome">Hai!</h1>
+                <button id="student-logout-btn"><i class="fa-solid fa-right-from-bracket"></i></button>
+            </div>
+
+            <div id="student-join-class" style="display:none;" class="feature-card">
+                <h3>Anda belum punya kelas</h3>
+                <input type="text" id="class-code-input" placeholder="Masukkan Kode Kelas dari Guru">
+                <button class="primary" id="join-class-btn">Gabung Kelas</button>
+            </div>
+
+            <div id="student-main-content" style="display:none;">
+                <div class="feature-card" style="background: linear-gradient(135deg, #008069, #25D366); color: white; text-align: center;">
+                    <p style="opacity:0.9;">Poin Saya</p>
+                    <h1 style="font-size:3em; margin:5px 0;" id="student-my-score">0</h1>
+                </div>
+
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                    <div class="feature-card" onclick="showSubPage('student-dashboard-page','student-chat-page')" style="cursor:pointer; text-align:center; margin:0;">
+                        <i class="fa-brands fa-whatsapp" style="font-size:2em; color:#25D366;"></i><br><small>Chat</small>
+                    </div>
+                    <div class="feature-card" onclick="showSubPage('student-dashboard-page','student-task-page')" style="cursor:pointer; text-align:center; margin:0;">
+                        <i class="fa-solid fa-list-check" style="font-size:2em; color:orange;"></i><br><small>Tugas</small>
+                    </div>
+                    <div class="feature-card" onclick="showSubPage('student-dashboard-page','student-quiz-join-page')" style="cursor:pointer; text-align:center; margin:0;">
+                        <i class="fa-solid fa-gamepad" style="font-size:2em; color:#9b59b6;"></i><br><small>Kuis Live</small>
+                    </div>
+                    <div class="feature-card" style="text-align:center; margin:0;">
+                        <i class="fa-solid fa-user-check" style="font-size:2em; color:#34495e;"></i><br>
+                        <input type="number" id="attendance-input" placeholder="No. Absen" style="font-size:0.8em; margin-top:5px;">
+                        <button class="primary" id="submit-attendance-btn" style="font-size:0.7em; padding:5px;">Absen</button>
+                    </div>
+                </div>
+
+                <div class="feature-card" style="margin-top:15px;">
+                    <h3><i class="fa-solid fa-trophy"></i> Top 5 Kelas</h3>
+                    <div id="student-leaderboard-preview" class="leaderboard-container" style="height:150px;"></div>
+                </div>
+
+                <div class="feature-card">
+                    <h3>Materi & Info</h3>
+                    <div id="announcement-list" class="content-list"></div>
+                    <div id="material-list" class="content-list" style="margin-top:10px; border-top:1px solid #eee; padding-top:10px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sub Pages Siswa -->
+        <div id="student-chat-page" class="sub-page">
+            <div class="header"><button class="back-btn" data-target="student-main-menu"><i class="fa-solid fa-arrow-left"></i></button><h1>Chat Kelas</h1></div>
+            <div class="chat-page-container">
+                <div class="chat-messages" id="chat-messages-student"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="chat-input-student" placeholder="Ketik pesan...">
+                    <button id="send-chat-btn-student" class="primary"><i class="fa-solid fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+        
+        <div id="student-task-page" class="sub-page">
+            <div class="header"><button class="back-btn" data-target="student-main-menu"><i class="fa-solid fa-arrow-left"></i></button><h1>Tugas</h1></div>
+            <div class="feature-card">
+                <h3 id="task-detail-title">Pilih tugas dari list...</h3>
+                <p id="task-detail-desc" style="font-size:0.9em; color:#555;"></p>
+                <small id="task-detail-deadline" style="color:red; display:block; margin-bottom:10px;"></small>
+                <input type="url" id="task-link-input" placeholder="Link Google Drive..." disabled>
+                <button class="primary" id="submit-task-btn" disabled>Kirim Tugas</button>
+                <p id="task-submission-status" style="text-align:center; margin-top:5px;"></p>
+            </div>
+            <div class="feature-card"><h3>Daftar Tugas</h3><div id="assignment-list-student" class="content-list"></div></div>
+        </div>
+
+        <div id="student-quiz-join-page" class="sub-page">
+            <div class="header"><button class="back-btn" data-target="student-main-menu"><i class="fa-solid fa-arrow-left"></i></button><h1>Gabung Kuis</h1></div>
+            <div class="feature-card" style="text-align:center; margin-top:50px;">
+                <h3>Masukkan PIN</h3>
+                <input type="number" id="quiz-pin-input" class="pin-input" placeholder="6 Digit Angka">
+                <button class="primary" id="join-quiz-btn">Gabung</button>
+            </div>
+        </div>
+        <div id="student-quiz-lobby-page" class="sub-page">
+            <div class="header"><h1>Lobi</h1></div>
+            <div class="feature-card" style="text-align:center;">
+                <h2 id="lobby-quiz-title-student">...</h2>
+                <h3 id="student-lobby-status-text" style="color:orange;">Menunggu Guru Memulai...</h3>
+                <div id="student-final-score-display" style="display:none;">
+                    <h1>Skor: <span id="student-final-score-text" style="color:var(--primary-color);"></span></h1>
+                    <button class="secondary" id="back-to-lobby-btn">Kembali ke Menu</button>
+                </div>
+            </div>
+            <div class="feature-card"><h3>Teman di Lobi (<span id="lobby-player-count-student">0</span>)</h3><div id="lobby-player-list-student"></div></div>
+        </div>
+        <div id="student-quiz-game-page" class="sub-page">
+            <div class="header"><h1>Kuis</h1></div>
+            <div class="feature-card">
+                <div style="display:flex; justify-content:space-between;">
+                    <span id="student-question-number">1/10</span>
+                    <span id="student-quiz-title">...</span>
+                </div>
+                <h2 id="student-question-text" style="margin:20px 0;">...</h2>
+                <div class="quiz-answer-options" style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <button class="answer-btn" id="answer-btn-0" data-index="0">A</button>
+                    <button class="answer-btn" id="answer-btn-1" data-index="1">B</button>
+                    <button class="answer-btn" id="answer-btn-2" data-index="2">C</button>
+                    <button class="answer-btn" id="answer-btn-3" data-index="3">D</button>
+                </div>
+                <button class="primary" id="student-next-question-btn" style="margin-top:20px;">Lanjut</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODALS -->
+    <!-- 1. Feedback Student -->
+    <div id="student-feedback-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2 style="color:var(--primary-color);">Feedback Pelajaran</h2>
+            <p>Beri bintang untuk pelajaran hari ini:</p>
+            <div class="star-rating" id="feedback-stars">
+                <i class="fa-solid fa-star" data-val="1"></i><i class="fa-solid fa-star" data-val="2"></i>
+                <i class="fa-solid fa-star" data-val="3"></i><i class="fa-solid fa-star" data-val="4"></i>
+                <i class="fa-solid fa-star" data-val="5"></i>
+            </div>
+            <textarea id="feedback-message" placeholder="Pesan untuk Mam Yanti..."></textarea>
+            <textarea id="feedback-suggestion" placeholder="Saran materi minggu depan..."></textarea>
+            <button class="primary" id="submit-feedback-btn">Kirim</button>
+        </div>
+    </div>
+
+    <!-- 2. Ice Breaking Student -->
+    <div id="student-ice-breaking-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2 style="color:var(--primary-color);"><i class="fa-solid fa-dice"></i> GAME TIME!</h2>
+            <div class="guide-box" style="background:#e8f5e9; color:#2e7d32; border:1px solid #c8e6c9;">
+                <strong>Misi Tim:</strong><br><span id="student-ice-mission" style="font-size:1.2em; font-weight:bold;">...</span>
+            </div>
+            <div style="text-align:left; background:#f5f5f5; padding:10px; border-radius:8px; margin-top:10px;">
+                <small>Anggota Tim:</small>
+                <ul id="student-ice-members" style="padding-left:20px;"></ul>
+            </div>
+            <button class="primary" onclick="document.getElementById('student-ice-breaking-modal').classList.remove('active')" style="margin-top:15px;">Siap Laksanakan!</button>
+        </div>
+    </div>
+
+    <!-- 3. New Material Popup (Live Share) -->
+    <div id="student-material-modal" class="modal-overlay">
+        <div class="modal-card">
+            <div class="live-badge" style="position:absolute; top:15px; left:15px;">LIVE</div>
+            <h2>Materi Baru!</h2>
+            <p>Mam Yanti sedang membagikan materi ini.</p>
+            <div style="margin:20px 0;">
+                <i class="fa-brands fa-google-drive" style="font-size:4em; color:#34A853;"></i>
+                <h3 id="student-popup-material-name" style="margin-top:10px;">Nama Materi</h3>
+            </div>
+            <a id="student-popup-material-link" href="#" target="_blank" class="button primary" style="display:block; text-decoration:none; background:var(--primary-color); color:white; padding:10px; border-radius:20px;">Buka Materi</a>
+            <button class="secondary" onclick="document.getElementById('student-material-modal').classList.remove('active')" style="margin-top:10px;">Tutup</button>
+        </div>
+    </div>
+
+    <footer class="app-footer">Web ini dibuat oleh MiAppsDeveloper 2025</footer>
+
+</div>
+
+<!-- FIREBASE SCRIPTS -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+<script src="https://apis.google.com/js/api.js"></script>
+<script src="https://accounts.google.com/gsi/client"></script>
+
+<script>
+    // CONFIG
+    const firebaseConfig = {
+        apiKey: "AIzaSyDpYabA0lb-0uh3Pe-URmeY7WxpIHj7c5Q",
+        authDomain: "e-learning-mamyanti.firebaseapp.com",
+        projectId: "e-learning-mamyanti",
+        storageBucket: "e-learning-mamyanti.appspot.com",
+        messagingSenderId: "198925356373",
+        appId: "1:198925356373:web:754ae2355b925aa50333dc"
+    };
+    const GOOGLE_API_KEY = "AIzaSyBJ9yRe5AYOJGiYwAqlm5wK1La3LhhuS5A";
+    const GOOGLE_CLIENT_ID = "198925356373-mb0ame0q1sh3elqlq4mofgdakn8df9jh.apps.googleusercontent.com";
+    const APP_ID = "198925356373"; 
+    const TEACHER_EMAIL = "elearningmamyanti@gmail.com";
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    // Global Vars
+    let currentUser = null, currentUserData = null;
+    let listeners = [];
+    let currentTaskToEdit = null; // For Edit Task
+
+    // Navigation
+    function showPage(pageId) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+    }
+    function showSubPage(parentId, subPageId) {
+        document.querySelector(`#${parentId} .sub-page.active`)?.classList.remove('active');
+        document.getElementById(subPageId).classList.add('active');
+        // Clear specific listeners if moving away from chat/game
+        if(!subPageId.includes('chat')) { if(window.chatListener) window.chatListener(); }
+    }
+
+    // Auth
+    auth.onAuthStateChanged(async u => {
+        if(u) {
+            currentUser = u;
+            document.getElementById('login-btn').style.display='none';
+            document.getElementById('login-spinner').style.display='block';
+            const doc = await db.collection('users').doc(u.uid).get();
+            if(!doc.exists) {
+                const role = u.email.toLowerCase() === TEACHER_EMAIL ? 'teacher' : 'student';
+                await db.collection('users').doc(u.uid).set({
+                    name: u.displayName, email: u.email, role: role, classId: null, score: 0
+                });
+            }
+            currentUserData = (await db.collection('users').doc(u.uid).get()).data();
+            if(currentUserData.role === 'teacher') initTeacher();
+            else initStudent();
+        } else {
+            showPage('login-page');
+            document.getElementById('login-btn').style.display='inline-flex';
+            document.getElementById('login-spinner').style.display='none';
+        }
+    });
+
+    document.getElementById('login-btn').onclick = () => {
+        const p = new firebase.auth.GoogleAuthProvider();
+        auth.signInWithPopup(p).catch(e => alert("Login Gagal: " + e.message));
+    };
+    const logout = () => auth.signOut().then(() => window.location.reload());
+    document.getElementById('teacher-logout-btn').onclick = logout;
+    document.getElementById('student-logout-btn').onclick = logout;
+
+    // ================= TEACHER LOGIC =================
+    function initTeacher() {
+        showPage('teacher-dashboard-page');
+        loadClasses();
+        loadTeacherAssignments();
+        loadTeacherAnnouncements();
+        loadTeacherMaterials();
+        loadTeacherQuizzes();
+        
+        // Bindings
+        document.getElementById('create-class-btn').onclick = createClass;
+        document.getElementById('create-task-btn').onclick = saveTask; // Create/Edit
+        document.getElementById('cancel-edit-task-btn').onclick = resetTaskForm;
+        document.getElementById('publish-announcement-btn').onclick = createAnnouncement;
+        document.getElementById('upload-material-btn').onclick = initPicker;
+        document.getElementById('create-quiz-btn').onclick = createQuiz;
+        document.getElementById('view-attendance-btn').onclick = viewAttendance;
+        
+        // Chat
+        document.getElementById('chat-class-select-teacher').onchange = (e) => loadChat(e.target.value, 'teacher');
+        document.getElementById('send-chat-btn-teacher').onclick = () => sendChat('teacher');
+        
+        // Points & Feedback
+        document.getElementById('request-feedback-btn').onclick = () => toggleFeedback(true);
+        document.getElementById('close-feedback-btn').onclick = () => toggleFeedback(false);
+        document.getElementById('feedback-class-select').onchange = loadFeedback;
+        document.getElementById('leaderboard-class-select').onchange = loadGlobalLeaderboard;
+        document.getElementById('submit-manual-point-btn').onclick = submitPoints;
+
+        // Ice Breaking
+        document.getElementById('start-ice-breaking-btn').onclick = startIceBreaking;
+        document.getElementById('stop-ice-breaking-btn').onclick = stopIceBreaking;
+        
+        // Quiz
+        document.getElementById('add-question-btn').onclick = addQuestion;
+        document.getElementById('start-quiz-game-btn').onclick = startQuizSession;
+        document.getElementById('finish-quiz-session-btn').onclick = finishQuizSession;
+    }
+
+    // 1. Classes & Dropdowns
+    function loadClasses() {
+        db.collection('classes').where('teacherId','==',currentUser.uid).onSnapshot(snap => {
+            const list = document.getElementById('class-code-list');
+            let html = '', opts = '<option value="">-- Pilih Kelas --</option>';
+            snap.forEach(d => {
+                html += `<div class="content-item" style="display:flex; justify-content:space-between;">
+                    <span>${d.data().name} (<strong>${d.data().code}</strong>)</span>
+                    <button class="danger" style="width:auto; padding:5px;" onclick="deleteDoc('classes','${d.id}')">Hapus</button>
+                </div>`;
+                opts += `<option value="${d.id}">${d.data().name}</option>`;
+            });
+            list.innerHTML = html || '<p style="text-align:center;color:#999;">Belum ada kelas.</p>';
+            
+            // Fill all dropdowns
+            const ids = ['task-class-target','announcement-class-target','material-class-target',
+                         'attendance-recap-class','chat-class-select-teacher','quiz-class-target-select',
+                         'feedback-class-select','leaderboard-class-select','ice-breaking-class-select'];
+            ids.forEach(id => {
+                const el = document.getElementById(id);
+                if(el) {
+                    const currentVal = el.value;
+                    el.innerHTML = opts;
+                    if(id === 'leaderboard-class-select') el.innerHTML += '<option value="GLOBAL">SEMUA KELAS (Global)</option>';
+                    if(id === 'announcement-class-target' || id === 'material-class-target') el.innerHTML += '<option value="SEMUA">SEMUA KELAS</option>';
+                    el.value = currentVal; 
+                }
+            });
+        });
+    }
+    async function createClass() {
+        const name = document.getElementById('class-name-input').value;
+        if(!name) return alert("Nama kelas wajib diisi");
+        const code = Math.random().toString(36).substring(2,8).toUpperCase();
+        await db.collection('classes').add({
+            name, code, teacherId: currentUser.uid, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        document.getElementById('class-name-input').value = '';
+        alert("Kelas berhasil dibuat: " + code);
+    }
+
+    // 2. Tasks (CRUD)
+    function loadTeacherAssignments() {
+        db.collection('assignments').where('teacherId','==',currentUser.uid).orderBy('createdAt','desc').onSnapshot(snap => {
+            let html = '';
+            snap.forEach(d => {
+                const data = d.data();
+                html += `<div class="content-item">
+                    <strong>${data.title}</strong> <small>(${data.deadline})</small><br>
+                    <span style="font-size:0.8em; color:#666;">${data.description.substring(0,50)}...</span>
+                    <div class="list-actions">
+                        <button class="primary" onclick="viewSubmissions('${d.id}','${data.title}')">Lihat</button>
+                        <button class="secondary" onclick="editTask('${d.id}','${data.title}','${data.description}','${data.deadline}','${data.classId}')">Edit</button>
+                        <button class="danger" onclick="deleteDoc('assignments','${d.id}')">Hapus</button>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('teacher-assignment-list').innerHTML = html || '<p style="text-align:center;">Belum ada tugas.</p>';
+        });
+    }
+    async function saveTask() {
+        const title = document.getElementById('task-title').value;
+        const desc = document.getElementById('task-desc').value;
+        const deadline = document.getElementById('task-deadline').value;
+        const classId = document.getElementById('task-class-target').value;
+        
+        if(!title || !classId) return alert("Mohon lengkapi data tugas.");
+        
+        const payload = {
+            title, description: desc, deadline, classId, teacherId: currentUser.uid, 
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        };
+
+        if (currentTaskToEdit) {
+            await db.collection('assignments').doc(currentTaskToEdit).update(payload);
+            alert("Tugas diperbarui!");
+        } else {
+            await db.collection('assignments').add(payload);
+            alert("Tugas dipublikasikan!");
+        }
+        resetTaskForm();
+    }
+    window.editTask = (id, title, desc, dead, cid) => {
+        currentTaskToEdit = id;
+        document.getElementById('task-title').value = title;
+        document.getElementById('task-desc').value = desc;
+        document.getElementById('task-deadline').value = dead;
+        document.getElementById('task-class-target').value = cid;
+        document.getElementById('task-form-title').textContent = "Edit Tugas";
+        document.getElementById('create-task-btn').textContent = "Update Tugas";
+        document.getElementById('cancel-edit-task-btn').style.display = 'inline-block';
+        document.getElementById('teacher-dashboard-page').querySelector('.page').scrollTo(0,0);
+    };
+    function resetTaskForm() {
+        currentTaskToEdit = null;
+        document.getElementById('task-title').value = '';
+        document.getElementById('task-desc').value = '';
+        document.getElementById('task-deadline').value = '';
+        document.getElementById('task-class-target').value = '';
+        document.getElementById('task-form-title').textContent = "Buat Tugas Baru";
+        document.getElementById('create-task-btn').textContent = "Publikasikan";
+        document.getElementById('cancel-edit-task-btn').style.display = 'none';
+    }
+    window.viewSubmissions = (aid, title) => {
+        document.getElementById('teacher-view-submissions-div').style.display='block';
+        document.getElementById('submission-list-title').textContent = "Pengumpulan: " + title;
+        db.collection('assignments').doc(aid).collection('submissions').get().then(snap => {
+            let html = '';
+            snap.forEach(d => {
+                html += `<div class="content-item"><strong>${d.data().studentName}</strong> <a href="${d.data().link}" target="_blank">Link Drive</a></div>`;
+            });
+            document.getElementById('submission-list-container').innerHTML = html || '<p>Belum ada.</p>';
+        });
+    };
+
+    // 3. Materials (Live Share)
+    function loadTeacherMaterials() {
+        db.collection('materials').where('teacherId','==',currentUser.uid).orderBy('createdAt','desc').onSnapshot(snap => {
+            let html = '';
+            snap.forEach(d => {
+                const dt = d.data();
+                html += `<div class="content-item">
+                    <i class="fa-brands fa-google-drive"></i> <strong>${dt.name}</strong>
+                    <div class="list-actions">
+                        <button class="primary" onclick="toggleLiveMaterial('${dt.classId}','${d.id}','${dt.name}','${dt.url}')">Bagikan Live</button>
+                        <button class="danger" onclick="deleteDoc('materials','${d.id}')">Hapus</button>
+                    </div>
+                </div>`;
+            });
+            document.getElementById('teacher-material-list').innerHTML = html;
+        });
+    }
+    async function toggleLiveMaterial(classId, matId, name, url) {
+        if(classId === 'SEMUA') return alert("Fitur Live hanya untuk per kelas spesifik.");
+        // Set field 'activeMaterial' on the Class document
+        if(confirm(`Tampilkan materi "${name}" di layar semua siswa kelas ini?`)) {
+            await db.collection('classes').doc(classId).update({
+                activeMaterial: { id: matId, name: name, url: url, active: true }
+            });
+            alert("Materi sedang ditampilkan di layar siswa!");
+        } else {
+            // Turn off
+            await db.collection('classes').doc(classId).update({
+                activeMaterial: { active: false }
+            });
+            alert("Akses materi ditutup.");
+        }
+    }
+    // Google Picker (Dummy implementation for UI flow)
+    window.initPicker = () => {
+        const cid = document.getElementById('material-class-target').value;
+        if(!cid) return alert("Pilih kelas tujuan upload.");
+        // Simulation of success
+        const name = prompt("Simulasi: Masukkan nama file materi");
+        const url = "https://drive.google.com/"; 
+        if(name) {
+            db.collection('materials').add({
+                name, url, classId: cid, teacherId: currentUser.uid, createdAt: firebase.firestore.FieldValue.serverTimestamp()
+            });
+            alert("Materi terupload (Simulasi).");
+        }
+    }
+
+    // 4. Points & Leaderboard
+    async function loadGlobalLeaderboard() {
+        const cid = document.getElementById('leaderboard-class-select').value;
+        const cont = document.getElementById('global-leaderboard-container');
+        const manualDiv = document.getElementById('manual-point-section');
+        if(!cid) return;
+        
+        let q = db.collection('users').where('role','==','student').orderBy('score','desc');
+        if(cid !== 'GLOBAL') q = q.where('classId','==',cid);
+        
+        if(cid !== 'GLOBAL') manualDiv.style.display = 'block';
+        else manualDiv.style.display = 'none';
+
+        q.onSnapshot(snap => {
+            let html = ''; let rank = 1;
+            snap.forEach(d => {
+                const u = d.data();
+                html += `<div class="leaderboard-item" onclick="selectStudent('${d.id}','${u.name}')" style="cursor:pointer;">
+                    <div class="rank">${rank}</div>
+                    <div class="info">${u.name} <br><small>${u.className || '-'}</small></div>
+                    <div class="points">${u.score} Pts</div>
+                </div>`;
+                rank++;
+            });
+            cont.innerHTML = html || '<p style="text-align:center; padding:20px;">Belum ada data.</p>';
+        });
+    }
+    window.selectStudent = (uid, name) => {
+        if(document.getElementById('manual-point-section').style.display === 'none') return;
+        document.getElementById('selected-student-id').value = uid;
+        document.getElementById('selected-student-name').value = name;
+    }
+    async function submitPoints() {
+        const uid = document.getElementById('selected-student-id').value;
+        const pts = parseInt(document.getElementById('manual-points-input').value);
+        if(!uid || !pts) return alert("Pilih siswa & isi poin.");
+        await db.collection('users').doc(uid).update({ score: firebase.firestore.FieldValue.increment(pts) });
+        alert("Poin ditambahkan.");
+        document.getElementById('manual-points-input').value = '';
+    }
+    async function toggleFeedback(state) {
+        const cid = document.getElementById('feedback-class-select').value;
+        if(!cid) return alert("Pilih kelas.");
+        await db.collection('classes').doc(cid).update({ isAskingFeedback: state });
+        document.getElementById('request-feedback-btn').style.display = state ? 'none' : 'inline-block';
+        document.getElementById('close-feedback-btn').style.display = state ? 'inline-block' : 'none';
+        if(state) alert("Popup feedback muncul di HP siswa.");
+        else alert("Sesi feedback ditutup.");
+    }
+    function loadFeedback() {
+        const cid = document.getElementById('feedback-class-select').value;
+        if(!cid) return;
+        db.collection('feedbacks').where('classId','==',cid).orderBy('createdAt','desc').limit(20).onSnapshot(snap => {
+            let html = '';
+            snap.forEach(d => {
+                const f = d.data();
+                html += `<div style="background:#f9f9f9; padding:10px; margin-bottom:5px; border-radius:8px;">
+                    <strong>${f.studentName}</strong> (${f.rating} <i class="fa-solid fa-star" style="color:gold;"></i>)<br>
+                    "${f.message}" <br> <small>Saran: ${f.suggestion}</small>
+                </div>`;
+            });
+            document.getElementById('feedback-results').innerHTML = html;
+        });
+    }
+
+    // 5. Ice Breaking
+    const iceMissions = [
+        "Cari benda warna KUNING di sekitarmu!", "Tebak Gaya: Peragakan 'Monyet'!", "Sambung kata: A -> B -> C...",
+        "Sebutkan 5 nama hewan dalam Bahasa Inggris!", "Tunjuk teman yang paling rajin!"
+    ];
+    async function startIceBreaking() {
+        const cid = document.getElementById('ice-breaking-class-select').value;
+        const gc = document.getElementById('ice-breaking-group-count').value;
+        if(!cid) return alert("Pilih kelas.");
+        
+        // Get Students
+        const snap = await db.collection('users').where('classId','==',cid).get();
+        if(snap.empty) return alert("Kelas kosong.");
+        let students = []; snap.forEach(d=>students.push(d.data().name));
+        
+        // Shuffle & Group
+        students.sort(() => Math.random() - 0.5);
+        let groups = Array.from({length:gc}, ()=>[]);
+        students.forEach((s,i) => groups[i%gc].push(s));
+        
+        const mission = iceMissions[Math.floor(Math.random()*iceMissions.length)];
+        
+        // Save
+        await db.collection('iceBreaking').doc(cid).set({
+            active: true, mission: mission, groups: groups.map((g,i)=>({name:`Kelompok ${i+1}`, members:g}))
+        });
+        
+        // Display UI
+        document.getElementById('ice-breaking-mission-display').textContent = mission;
+        let h = ''; groups.forEach((g,i) => h+=`<div style="background:#fff; padding:10px; margin-bottom:5px; border-radius:5px;"><strong>Kelompok ${i+1}:</strong> ${g.join(', ')}</div>`);
+        document.getElementById('ice-breaking-groups-display').innerHTML = h;
+        document.getElementById('ice-breaking-result-area').style.display='block';
+        document.getElementById('start-ice-breaking-btn').style.display='none';
+        document.getElementById('stop-ice-breaking-btn').style.display='inline-block';
+    }
+    async function stopIceBreaking() {
+        const cid = document.getElementById('ice-breaking-class-select').value;
+        await db.collection('iceBreaking').doc(cid).update({active:false});
+        document.getElementById('ice-breaking-result-area').style.display='none';
+        document.getElementById('start-ice-breaking-btn').style.display='inline-block';
+        document.getElementById('stop-ice-breaking-btn').style.display='none';
+    }
+
+    // 6. Chat (WhatsApp Style)
+    function loadChat(cid, role) {
+        if(!cid) return;
+        if(window.chatListener) window.chatListener();
+        
+        const el = document.getElementById(`chat-messages-${role}`);
+        const inp = document.getElementById(`chat-input-${role}`);
+        const btn = document.getElementById(`send-chat-btn-${role}`);
+        
+        inp.disabled = false; btn.disabled = false;
+        
+        window.chatListener = db.collection('chats').where('classId','==',cid).orderBy('timestamp','asc').limitToLast(50).onSnapshot(snap => {
+            let html = '';
+            snap.forEach(d => {
+                const msg = d.data();
+                const isSelf = msg.senderId === currentUser.uid;
+                const time = msg.timestamp ? new Date(msg.timestamp.toDate()).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'}) : '...';
+                html += `<div class="chat-message ${isSelf?'self':'other'}">
+                    <div class="sender">${isSelf?'':msg.senderName}</div>
+                    ${msg.text}
+                    <span class="time">${time}</span>
+                </div>`;
+            });
+            el.innerHTML = html;
+            el.scrollTop = el.scrollHeight;
+        });
+    }
+    async function sendChat(role) {
+        const inp = document.getElementById(`chat-input-${role}`);
+        const cid = role === 'teacher' ? document.getElementById('chat-class-select-teacher').value : currentUserData.classId;
+        const txt = inp.value.trim();
+        if(!txt || !cid) return;
+        inp.value = '';
+        await db.collection('chats').add({
+            text: txt, classId: cid, senderId: currentUser.uid, senderName: currentUser.displayName, timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+    }
+
+    // 7. Announcements & Attendance
+    async function createAnnouncement() {
+        const title = document.getElementById('announcement-title').value;
+        const content = document.getElementById('announcement-content').value;
+        const cid = document.getElementById('announcement-class-target').value;
+        if(!title || !cid) return alert("Lengkapi info.");
+        await db.collection('announcements').add({title, content, classId:cid, teacherId:currentUser.uid, createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+        alert("Pengumuman terkirim.");
+        document.getElementById('announcement-title').value=''; document.getElementById('announcement-content').value='';
+    }
+    function loadTeacherAnnouncements() {
+        db.collection('announcements').where('teacherId','==',currentUser.uid).orderBy('createdAt','desc').onSnapshot(s => {
+            let h=''; s.forEach(d=> h+= `<div class="content-item"><strong>${d.data().title}</strong><div class="list-actions"><button class="danger" onclick="deleteDoc('announcements','${d.id}')">Hapus</button></div></div>`);
+            document.getElementById('teacher-announcement-list').innerHTML = h;
+        });
+    }
+    async function viewAttendance() {
+        const d = document.getElementById('attendance-recap-date').value;
+        const c = document.getElementById('attendance-recap-class').value;
+        if(!d || !c) return alert("Pilih tanggal & kelas.");
+        const snap = await db.collection('attendance').doc(d).collection('submissions').where('classId','==',c).orderBy('number').get();
+        let h=''; snap.forEach(doc => h+= `<div class="content-item"><strong>${doc.data().number}. ${doc.data().name}</strong></div>`);
+        document.getElementById('attendance-recap-list').innerHTML = h || '<p>Tidak ada data.</p>';
+    }
+
+    // 8. General Helpers
+    window.deleteDoc = async (col, id) => {
+        if(confirm("Yakin hapus?")) await db.collection(col).doc(id).delete();
+    }
+
+    // ================= STUDENT LOGIC =================
+    function initStudent() {
+        if(!currentUserData.classId) {
+            showPage('student-dashboard-page');
+            document.getElementById('student-join-class').style.display = 'block';
+            document.getElementById('join-class-btn').onclick = joinClass;
+        } else {
+            showPage('student-dashboard-page');
+            document.getElementById('student-main-content').style.display = 'block';
+            document.getElementById('student-my-score').textContent = currentUserData.score;
+            
+            // Loaders
+            loadStudentContent(currentUserData.classId);
+            loadStudentLeaderboard(currentUserData.classId);
+            
+            // Listeners
+            loadChat(currentUserData.classId, 'student');
+            listenFeedback(currentUserData.classId);
+            listenIceBreaking(currentUserData.classId);
+            listenLiveMaterial(currentUserData.classId); // NEW FEATURE
+
+            // Bindings
+            document.getElementById('send-chat-btn-student').onclick = () => sendChat('student');
+            document.getElementById('submit-attendance-btn').onclick = submitAttendance;
+            document.getElementById('submit-feedback-btn').onclick = sendFeedback;
+            document.getElementById('join-quiz-btn').onclick = joinQuiz;
+            document.getElementById('submit-task-btn').onclick = submitTask;
+            document.querySelectorAll('.star-rating i').forEach(i => i.onclick = function() {
+                this.parentElement.setAttribute('data-val', this.getAttribute('data-val'));
+                this.parentElement.querySelectorAll('i').forEach(s => s.style.color = (s.getAttribute('data-val') <= this.getAttribute('data-val')) ? 'gold' : '#ddd');
+            });
+        }
+    }
+
+    // New Feature: Live Material Popup
+    function listenLiveMaterial(cid) {
+        db.collection('classes').doc(cid).onSnapshot(doc => {
+            if(doc.exists) {
+                const mat = doc.data().activeMaterial;
+                const modal = document.getElementById('student-material-modal');
+                if(mat && mat.active) {
+                    document.getElementById('student-popup-material-name').textContent = mat.name;
+                    document.getElementById('student-popup-material-link').href = mat.url;
+                    modal.classList.add('active');
+                } else {
+                    modal.classList.remove('active');
+                }
+            }
+        });
+    }
+
+    async function joinClass() {
+        const code = document.getElementById('class-code-input').value.trim().toUpperCase();
+        const q = await db.collection('classes').where('code','==',code).get();
+        if(q.empty) return alert("Kode salah.");
+        const cData = q.docs[0];
+        await db.collection('users').doc(currentUser.uid).update({ classId: cData.id, className: cData.data().name });
+        location.reload();
+    }
+
+    function loadStudentContent(cid) {
+        db.collection('announcements').where('classId','in',[cid,'SEMUA']).orderBy('createdAt','desc').onSnapshot(s => {
+            let h=''; s.forEach(d => h+= `<div class="content-item"><strong>${d.data().title}</strong><br>${d.data().content}</div>`);
+            document.getElementById('announcement-list').innerHTML = h;
+        });
+        db.collection('materials').where('classId','in',[cid,'SEMUA']).orderBy('createdAt','desc').onSnapshot(s => {
+            let h=''; s.forEach(d => h+= `<div class="content-item"><a href="${d.data().url}" target="_blank">${d.data().name}</a></div>`);
+            document.getElementById('material-list').innerHTML = h;
+        });
+        db.collection('assignments').where('classId','==',cid).orderBy('deadline','desc').onSnapshot(s => {
+            let h=''; s.forEach(d => h+= `<div class="content-item" onclick="openTaskStudent('${d.id}','${d.data().title}','${d.data().description}','${d.data().deadline}')" style="cursor:pointer;"><strong>${d.data().title}</strong></div>`);
+            document.getElementById('assignment-list-student').innerHTML = h;
+        });
+    }
+
+    window.openTaskStudent = (id, t, d, dl) => {
+        showSubPage('student-dashboard-page','student-task-page');
+        document.getElementById('task-detail-title').textContent = t;
+        document.getElementById('task-detail-desc').textContent = d;
+        document.getElementById('task-detail-deadline').textContent = "Deadline: " + dl;
+        document.getElementById('submit-task-btn').setAttribute('data-id', id);
+        document.getElementById('task-link-input').disabled = false;
+        document.getElementById('submit-task-btn').disabled = false;
+        
+        // Check if already submitted
+        db.collection('assignments').doc(id).collection('submissions').doc(currentUser.uid).get().then(doc => {
+            if(doc.exists) {
+                document.getElementById('task-submission-status').textContent = "Sudah dikumpulkan.";
+                document.getElementById('task-submission-status').style.color = "green";
+                document.getElementById('task-link-input').value = doc.data().link;
+                document.getElementById('submit-task-btn').disabled = true;
+            } else {
+                document.getElementById('task-submission-status').textContent = "";
+                document.getElementById('task-link-input').value = "";
+            }
+        });
+    }
+
+    async function submitTask() {
+        const id = document.getElementById('submit-task-btn').getAttribute('data-id');
+        const link = document.getElementById('task-link-input').value;
+        if(!link) return alert("Masukkan link.");
+        await db.collection('assignments').doc(id).collection('submissions').doc(currentUser.uid).set({
+            studentName: currentUser.displayName, link: link, timestamp: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        alert("Tugas terkirim."); window.openTaskStudent(id, ...[,,,]); // Refresh status
+    }
+
+    function loadStudentLeaderboard(cid) {
+        db.collection('users').where('classId','==',cid).orderBy('score','desc').limit(5).onSnapshot(s => {
+            let h=''; let r=1;
+            s.forEach(d => {
+                const u=d.data();
+                h+=`<div class="leaderboard-item"><div class="rank">${r++}</div><div class="info">${u.name}</div><div class="points">${u.score}</div></div>`;
+            });
+            document.getElementById('student-leaderboard-preview').innerHTML = h;
+        });
+    }
+
+    async function submitAttendance() {
+        const no = document.getElementById('attendance-input').value;
+        if(!no) return alert("Isi nomor absen.");
+        const d = new Date().toISOString().split('T')[0];
+        await db.collection('attendance').doc(d).collection('submissions').doc(currentUser.uid).set({
+            name: currentUser.displayName, number: parseInt(no), classId: currentUserData.classId
+        });
+        alert("Absen berhasil.");
+    }
+
+    // Feedback & Ice Breaking Listeners
+    function listenFeedback(cid) {
+        db.collection('classes').doc(cid).onSnapshot(doc => {
+            if(doc.exists && doc.data().isAskingFeedback) {
+                document.getElementById('student-feedback-modal').classList.add('active');
+            } else {
+                document.getElementById('student-feedback-modal').classList.remove('active');
+            }
+        });
+    }
+    async function sendFeedback() {
+        const rating = document.getElementById('feedback-stars').getAttribute('data-val');
+        const msg = document.getElementById('feedback-message').value;
+        const sug = document.getElementById('feedback-suggestion').value;
+        if(!rating) return alert("Pilih bintang.");
+        await db.collection('feedbacks').add({
+            rating: parseInt(rating), message: msg, suggestion: sug, 
+            studentName: currentUser.displayName, classId: currentUserData.classId, 
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        alert("Terima kasih!");
+        // Just hide locally, wait for teacher to close
+        document.getElementById('student-feedback-modal').classList.remove('active');
+    }
+
+    function listenIceBreaking(cid) {
+        db.collection('iceBreaking').doc(cid).onSnapshot(doc => {
+            const modal = document.getElementById('student-ice-breaking-modal');
+            if(doc.exists && doc.data().active) {
+                const data = doc.data();
+                const myGroup = data.groups.find(g => g.members.includes(currentUser.displayName));
+                if(myGroup) {
+                    document.getElementById('student-ice-mission').textContent = data.mission;
+                    document.getElementById('student-ice-members').innerHTML = myGroup.members.map(m => `<li>${m}</li>`).join('');
+                    modal.classList.add('active');
+                }
+            } else {
+                modal.classList.remove('active');
+            }
+        });
+    }
+
+    // --- QUIZ ---
+    async function createQuiz() {
+        const title = document.getElementById('quiz-title').value;
+        const desc = document.getElementById('quiz-description').value;
+        if(!title) return alert("Isi judul.");
+        await db.collection('quizzes').add({title, description:desc, teacherId:currentUser.uid, createdAt:firebase.firestore.FieldValue.serverTimestamp()});
+        alert("Kuis dibuat. Silakan tambah soal di Detail.");
+        document.getElementById('quiz-title').value='';
+    }
+    function loadTeacherQuizzes() {
+        db.collection('quizzes').where('teacherId','==',currentUser.uid).orderBy('createdAt','desc').onSnapshot(s => {
+            let h=''; s.forEach(d => {
+                h+=`<div class="content-item"><strong>${d.data().title}</strong> <div class="list-actions">
+                    <button class="primary" onclick="openQuizDetail('${d.id}','${d.data().title}')">Detail/Soal</button>
+                    <button class="danger" onclick="deleteDoc('quizzes','${d.id}')">Hapus</button></div></div>`;
+            });
+            document.getElementById('quiz-list-container').innerHTML = h;
+        });
+    }
+    window.openQuizDetail = (qid, title) => {
+        showSubPage('teacher-dashboard-page','teacher-quiz-detail-page');
+        document.getElementById('quiz-detail-title').textContent = title;
+        document.getElementById('add-question-btn').onclick = () => addQuestion(qid);
+        loadQuestions(qid);
+    }
+    async function addQuestion(qid) {
+        const q = document.getElementById('question-text').value;
+        const ops = [0,1,2,3].map(i => document.getElementById('option-'+i).value);
+        const ans = parseInt(document.getElementById('correct-answer-select').value);
+        if(!q || ops.some(o=>!o)) return alert("Lengkapi soal.");
+        await db.collection('quizzes').doc(qid).collection('questions').add({q, ops, ans});
+        alert("Soal tersimpan.");
+    }
+    function loadQuestions(qid) {
+        db.collection('quizzes').doc(qid).collection('questions').onSnapshot(s => {
+            let h=''; s.forEach(d => h+=`<div class="content-item">${d.data().q} <button class="danger" style="float:right;" onclick="deleteDoc('quizzes/${qid}/questions','${d.id}')">X</button></div>`);
+            document.getElementById('question-list-container').innerHTML = h;
+        });
+    }
+</script>
+</body>
+</html>
